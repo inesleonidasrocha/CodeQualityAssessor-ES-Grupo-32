@@ -73,6 +73,6 @@ public class ListClasses {
 
 	public static void main(String[] args) {
 		File projectDir = new File("src/files");
-		listWMC(projectDir);
+		listClasses(projectDir);
 	}
 }
