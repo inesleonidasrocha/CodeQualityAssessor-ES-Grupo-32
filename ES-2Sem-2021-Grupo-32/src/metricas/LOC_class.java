@@ -1,72 +1,50 @@
 package metricas;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.stmt.WhileStmt;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+import com.google.common.base.Strings;
+
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
-//.substring(line.indexOf(" "),line.indexOf("("))/
 public class LOC_class {
-	private static int intFlag;
-	private static boolean flag;
-	private static ArrayList<String> docJava = new ArrayList<String>();
-	private static boolean isCommented = false;
-	private static File javaFile = new File("src/files");
-
-	public static void readFile(String path) throws FileNotFoundException {
-		File[] files = new File(path).listFiles();
-		for (File a : files) {
+	public static void listLOC(File projectDir) {
+		new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
+			System.out.println(path);
+			System.out.println(Strings.repeat("=", path.length()));
+			// CompilationUnit statement = StaticJavaParser.parse(file);
 			try {
-				Scanner scanner = new Scanner(a);
-				int i = 0;
-				while (scanner.hasNextLine()) {
-					String line = scanner.nextLine().trim();
+				StaticJavaParser.getConfiguration().setAttributeComments(false);
 
-					if (!line.isBlank() && !line.contains("import") && !line.startsWith("//") || line.contains("/*")) {
-						if ((line.startsWith("/") && !line.contains("/") /* && isCommentLine(line) */ )
-								|| line.startsWith("*")) {
-							continue;
-						} else {
-							docJava.add(line);
-							System.out.println(docJava.get(i));
-						}
-						i++;
+				new VoidVisitorAdapter<Object>() {
+					@Override
+					public void visit(ClassOrInterfaceDeclaration n, Object arg) {
+						super.visit(n, arg);
+						System.out.println(" * " + n.getName());
+
+						long numberOfLines = n.toString().lines().count();
+						System.out.println("Number of lines: " + numberOfLines);
 					}
-				}
-				scanner.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-
+				}.visit(StaticJavaParser.parse(file), null);
+				System.out.println(); // empty line
+			} catch (IOException e) {
+				new RuntimeException(e);
 			}
-		}
+		}).explore(projectDir);
 
 	}
 
-	/*
-	 * public static boolean isCommentLine(String line) { String comment; int
-	 * indexStart =0; int indexEnd = 0; for(int j = 1; j < line.length(); j++) {
-	 * if(line.charAt(j-1) == '/' && line.charAt(j) == '*' ) { indexStart = j-1; }
-	 * if(line.charAt(line.length()-2) =='*' && line.charAt(line.length()-1) == '/')
-	 * { indexEnd = line.length()-1; }
-	 * 
-	 * } comment = line.substring(indexStart, indexEnd); System.out.println(line +
-	 * " comment:" + comment + " indeStart:" + indexStart + " indexEnd:" +
-	 * indexEnd); return line.equals(comment); }
-	 */
 
-	public int Loc_class() {
-
-		return docJava.size();
+	public static void main(String[] args) {
+		File projectDir = new File("src/files");
+		listLOC(projectDir);
 	}
-
-	public static void main(String[] args) throws FileNotFoundException {
-		readFile("src/files");
-
-		// System.out.println(docJava.size());
-	}
-
-	public static ArrayList<String> getDocJava() {
-		return docJava;
-	}
-
 }

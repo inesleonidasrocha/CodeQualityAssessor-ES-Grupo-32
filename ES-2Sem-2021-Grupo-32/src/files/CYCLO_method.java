@@ -22,7 +22,7 @@ public class CYCLO_method {
 		nComplexidades(path);
 
 	}
-
+//if
 	public static void nComplexidades(String path) {
 		File[] files = new File(path).listFiles();
 		for (File a : files) {
@@ -60,4 +60,16 @@ public class CYCLO_method {
 		}
 
 	}
+	public class Cars {
+		int i = 0;
+		int a = 0;
+	public Cars() {
+		if (i==0)
+			a++;
+	}
+		
+	}
 }
+
+	
+

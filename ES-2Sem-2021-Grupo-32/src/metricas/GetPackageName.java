@@ -14,7 +14,7 @@ import com.google.common.base.Strings;
 public class GetPackageName {
 	static List<String> p = new ArrayList<>();
 
-	//Fazer hashmap 
+	// Fazer hashmap
 	public static void listPackageName(File projectDir) {
 		new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
 			System.out.println(path);
@@ -22,9 +22,15 @@ public class GetPackageName {
 			// CompilationUnit statement = StaticJavaParser.parse(file);
 			try {
 				CompilationUnit cu = StaticJavaParser.parse(file);
-				String packageName = cu.getPackageDeclaration().toString();
+				if (cu.getPackageDeclaration().isPresent()) {
+					String pack = cu.getPackageDeclaration().get().toString();
+					String b =pack.trim();
+					System.out.println(b.replace(";", "") + "\n");
+				} else {
+					System.out.println("default package" + "\n");
+				}
 				// p.add(packageName);
-				System.out.println(packageName); // empty line
+				 //System.out.println(); // empty line
 			} catch (IOException e) {
 				new RuntimeException(e);
 			}
