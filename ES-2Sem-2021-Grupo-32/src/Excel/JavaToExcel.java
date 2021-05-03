@@ -5,20 +5,32 @@ import java.util.HashMap;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
 
-public class JavaToExcel {
+import metrics.GetMetricas;
+
+public class JavaToExcel extends Thread {
 	static GetMetricas m;
+	private static String folderName;
 
-	public static void writeToExcel(String folderName) {
+	public JavaToExcel(String folderName) {
+		this.folderName = folderName;
+
+	}
+
+	public static void writeToExcel() {
 		try {
-			String filename = folderName + ".xls";
+
 			HSSFWorkbook workbook = new HSSFWorkbook();
 			HSSFSheet sheet = workbook.createSheet("FirstSheet");
 
 			HSSFRow rowhead = sheet.createRow((short) 0);
+
 			rowhead.createCell(0).setCellValue("MethodID");
 			rowhead.createCell(1).setCellValue("package");
 			rowhead.createCell(2).setCellValue("class");
@@ -28,25 +40,16 @@ public class JavaToExcel {
 			rowhead.createCell(6).setCellValue("WMC_class");
 			rowhead.createCell(7).setCellValue("LOC_method");
 			rowhead.createCell(8).setCellValue("CYCLO_method");
-			File projectDir = new File("C:\\Users\\Bombas\\Pictures\\ES_eclipse\\test");
 
-			HashMap<Integer, String[]> methodID = m.MCalls(projectDir);
+			File projectDir = new File(folderName);
+
+			String filename = projectDir.getName() + "_metrics.xls";
+
+			HashMap<Integer, String[]> methodID = m.MCalls(projectDir, 50, 10, 50, 10, "AND");
 
 			for (int i = 0; i < methodID.size(); i++) {
-				String[] a = methodID.get(i + 1);
-				HSSFRow row = sheet.createRow((short) i + 1);
-				row.createCell(0).setCellValue(String.valueOf(i + 1));
+				HSSFRow row = rowContents(sheet, methodID, i);
 
-				System.out.println((i + 1) + " - " + a[0] + " - " + a[1] + " - " + a[2] + " - " + a[3] + " -" + a[4]
-						+ " - " + a[5]);
-				row.createCell(1).setCellValue(a[2]);
-				row.createCell(2).setCellValue(a[0]);
-				row.createCell(3).setCellValue(a[1]);
-				row.createCell(4).setCellValue(a[3]);
-				row.createCell(5).setCellValue(a[4]);
-				row.createCell(6).setCellValue(a[5]);
-				row.createCell(7).setCellValue(a[6]);
-				row.createCell(8).setCellValue(a[7]);
 			}
 			FileOutputStream fileOut = new FileOutputStream(filename);
 			workbook.write(fileOut);
@@ -59,7 +62,28 @@ public class JavaToExcel {
 
 	}
 
+	private static HSSFRow rowContents(HSSFSheet sheet, HashMap<Integer, String[]> methodID, int i) {
+		String[] a = methodID.get(i + 1);
+		HSSFRow row = sheet.createRow((short) i + 1);
+		row.createCell(0).setCellValue(String.valueOf(i + 1));
+		row.createCell(1).setCellValue(a[2]);
+		row.createCell(2).setCellValue(a[0]);
+		row.createCell(3).setCellValue(a[1]);
+		row.createCell(4).setCellValue(a[3]);
+		row.createCell(5).setCellValue(a[4]);
+		row.createCell(6).setCellValue(a[5]);
+		row.createCell(7).setCellValue(a[6]);
+		row.createCell(8).setCellValue(a[7]);
+		return row;
+	}
+
+	public void run() {
+
+		writeToExcel();
+
+	}
+
 	public static void main(String[] args) throws IOException {
-		writeToExcel("test");
+		writeToExcel();
 	}
 }
