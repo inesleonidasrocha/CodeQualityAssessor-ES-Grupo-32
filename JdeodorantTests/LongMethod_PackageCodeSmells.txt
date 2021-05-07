@@ -1,0 +1,2 @@
+codeSmells.CodeSmellsAnalyser	public static HashMap<java.lang.Integer,java.lang.String[]> calculateIndicatores() 	c	B2	0/5
+codeSmells.GetCodeSmellsExcel	public java.lang.String ReadCellData(int, int) 	wb	B1	0/4
