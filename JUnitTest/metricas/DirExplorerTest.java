@@ -1,4 +1,4 @@
-package metricas;
+package metricsTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -14,7 +14,7 @@ import metrics.DirExplorer;
 
 class DirExplorerTest {
 	private static File file = new File("src");
-	private static final int numberOfJavaFiles = 10;
+	private static final int numberOfJavaFiles = 11;
 	private static int countNumberOfFiles = 0;
 	private static boolean dirEmpty;
 
@@ -24,9 +24,10 @@ class DirExplorerTest {
 			countNumberOfFiles++;
 		}).explore(file);
 
-		DirExplorer a = new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {});
-		a.numberF(0, "", file);
-		dirEmpty = a.numberF(0, "", file);
+		DirExplorer a = new DirExplorer((level, path, file) -> path.endsWith(".java"), (level, path, file) -> {
+		});
+		a.isDirEmpty(0, "", file);
+		dirEmpty = a.isDirEmpty(0, "", file);
 
 	}
 
@@ -44,7 +45,7 @@ class DirExplorerTest {
 
 	@Test
 	void testNumberFilesInSrc() {
-		assertEquals(countNumberOfFiles, numberOfJavaFiles);
+		assertEquals(numberOfJavaFiles,countNumberOfFiles);
 	}
 
 	@Test
