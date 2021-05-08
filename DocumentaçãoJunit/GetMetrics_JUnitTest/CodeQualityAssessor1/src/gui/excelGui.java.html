@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>excelGui.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">GetMetricasTest (1) (07/05/2021 15:18:52)</a> &gt; <a href="../../index.html" class="el_group">CodeQualityAssessor1</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">gui</a> &gt; <span class="el_source">excelGui.java</span></div><h1>excelGui.java</h1><pre class="source lang-java linenums">package gui;
+
+import javax.swing.JTable;
+import javax.swing.JScrollPane;
+import java.util.HashMap;
+import javax.swing.table.DefaultTableModel;
+import java.io.Serializable;
+
+<span class="nc" id="L9">public class excelGui implements Serializable {</span>
+	private static JTable tabelaExcel;
+	private static JScrollPane scrollPane;
+
+	public JTable getTabelaExcel() {
+<span class="nc" id="L14">		return tabelaExcel;</span>
+	}
+
+	public void setTabelaExcel(JTable tabelaExcel) {
+<span class="nc" id="L18">		this.tabelaExcel = tabelaExcel;</span>
+<span class="nc" id="L19">	}</span>
+
+	public JScrollPane getScrollPane() {
+<span class="nc" id="L22">		return scrollPane;</span>
+	}
+
+	public void setScrollPane(JScrollPane scrollPane) {
+<span class="nc" id="L26">		this.scrollPane = scrollPane;</span>
+<span class="nc" id="L27">	}</span>
+
+	public static void dataToExcel(HashMap&lt;Integer, String[]&gt; methodID) {
+<span class="nc" id="L30">		String[][] rowData = new String[methodID.size()][11];</span>
+<span class="nc bnc" id="L31" title="All 2 branches missed.">		for (int i = 0; i &lt; methodID.size(); i++) {</span>
+<span class="nc" id="L32">			String[] methodData = methodID.get(i + 1);</span>
+<span class="nc" id="L33">			rowData[i][0] = String.valueOf(i + 1);</span>
+<span class="nc" id="L34">			rowData[i][1] = methodData[2];</span>
+<span class="nc" id="L35">			rowData[i][2] = methodData[0];</span>
+<span class="nc" id="L36">			rowData[i][3] = methodData[1];</span>
+<span class="nc" id="L37">			rowData[i][4] = methodData[3];</span>
+<span class="nc" id="L38">			rowData[i][5] = methodData[4];</span>
+<span class="nc" id="L39">			rowData[i][6] = methodData[5];</span>
+<span class="nc" id="L40">			rowData[i][7] = methodData[9]; // is_God_Class</span>
+<span class="nc" id="L41">			rowData[i][8] = methodData[6];</span>
+<span class="nc" id="L42">			rowData[i][9] = methodData[7];</span>
+<span class="nc" id="L43">			rowData[i][10] = methodData[8];// is_long_Method</span>
+		}
+<span class="nc" id="L45">		tabelaExcel.setModel(</span>
+<span class="nc" id="L46">				new DefaultTableModel(rowData, new String[] { &quot;MethodID&quot;, &quot;package&quot;, &quot;class&quot;, &quot;method&quot;, &quot;NOM_class&quot;,</span>
+<span class="nc" id="L47">						&quot;LOC_class&quot;, &quot;WMC_class&quot;, &quot;is_God_class&quot;, &quot;LOC_method&quot;, &quot;CYCLO_method&quot;, &quot;is_Long_Method&quot; }));</span>
+<span class="nc" id="L48">		tabelaExcel.getColumnModel().getColumn(0).setMinWidth(70);</span>
+<span class="nc" id="L49">		tabelaExcel.getColumnModel().getColumn(1).setMinWidth(70);</span>
+<span class="nc" id="L50">		tabelaExcel.getColumnModel().getColumn(2).setMinWidth(20);</span>
+<span class="nc" id="L51">		tabelaExcel.getColumnModel().getColumn(3).setMinWidth(70);</span>
+<span class="nc" id="L52">		tabelaExcel.getColumnModel().getColumn(4).setMinWidth(70);</span>
+<span class="nc" id="L53">		tabelaExcel.getColumnModel().getColumn(5).setMinWidth(100);</span>
+<span class="nc" id="L54">		tabelaExcel.getColumnModel().getColumn(6).setMinWidth(100);</span>
+<span class="nc" id="L55">		tabelaExcel.getColumnModel().getColumn(7).setMinWidth(100);</span>
+<span class="nc" id="L56">		tabelaExcel.getColumnModel().getColumn(8).setMinWidth(100);</span>
+<span class="nc" id="L57">		tabelaExcel.getColumnModel().getColumn(9).setMinWidth(100);</span>
+<span class="nc" id="L58">		tabelaExcel.getColumnModel().getColumn(10).setMinWidth(100);</span>
+<span class="nc" id="L59">		tabelaExcel.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);</span>
+<span class="nc" id="L60">		tabelaExcel.getTableHeader().setReorderingAllowed(false);</span>
+<span class="nc" id="L61">		scrollPane.setViewportView(tabelaExcel);</span>
+<span class="nc" id="L62">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>GetMetricasTest (1) (07/05/2021 15:18:52)</div></body></html>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>GetMetricasTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">GetMetricasTest (1) (07/05/2021 15:18:52)</a> &gt; <a href="../../index.html" class="el_group">CodeQualityAssessor1</a> &gt; <a href="../index.html" class="el_bundle">JUnitTest</a> &gt; <a href="index.source.html" class="el_package">metricas</a> &gt; <span class="el_source">GetMetricasTest.java</span></div><h1>GetMetricasTest.java</h1><pre class="source lang-java linenums">package metricas;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+
+import metrics.DirExplorer;
+import metrics.GetMetrics;
+
+<span class="fc" id="L25">class GetMetricasTest {</span>
+<span class="fc" id="L26">	private static List&lt;String&gt; actualList = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L27">	private static List&lt;String&gt; expectedlList = new ArrayList&lt;String&gt;();</span>
+<span class="fc" id="L28">	private static File projectDir = new File(&quot;C:\\Users\\Bombas\\Pictures\\ES_eclipse\\test&quot;);</span>
+<span class="fc" id="L29">	private static GetMetrics metrics = new GetMetrics();</span>
+	private static final int numberLines = 4409;
+	private static HashMap&lt;Integer, String[]&gt; extMetrics;
+	private static final int LOC_method = 50;
+	private static final int CYCLO_method = 10;
+	private static final int WMC_class = 50;
+	private static final int NOM_class = 10;
+<span class="fc" id="L36">	private static final String operadorLogico = &quot;AND&quot;;</span>
+
+	@BeforeAll
+	static void setUpBeforeClass() throws Exception {
+
+<span class="fc" id="L41">		new DirExplorer((level, path, file) -&gt; path.endsWith(&quot;.java&quot;), (level, path, file) -&gt; {</span>
+			try {
+<span class="fc" id="L43">				StaticJavaParser.getConfiguration().setAttributeComments(false);</span>
+
+<span class="fc" id="L45">				new VoidVisitorAdapter&lt;Object&gt;() {</span>
+					@Override
+					public void visit(ClassOrInterfaceDeclaration declaration, Object arg) {
+<span class="fc" id="L48">						super.visit(declaration, arg);</span>
+<span class="fc" id="L49">						List&lt;MethodDeclaration&gt; methods = declaration.getMethods();</span>
+
+<span class="fc bfc" id="L51" title="All 2 branches covered.">						for (MethodDeclaration methodDeclaration : methods) {</span>
+<span class="pc bpc" id="L52" title="1 of 2 branches missed.">							if (!declaration.isInterface()) {</span>
+<span class="fc" id="L53">								actualList.add(metrics.LOC_method(methodDeclaration));</span>
+							}
+						}
+<span class="fc" id="L56">					}</span>
+
+<span class="fc" id="L58">				}.visit(StaticJavaParser.parse(file), null);</span>
+
+<span class="pc" id="L60">			} catch (IOException e) {</span>
+<span class="nc" id="L61">				new RuntimeException(e);</span>
+			}
+<span class="fc" id="L63">		}).explore(projectDir);</span>
+<span class="fc" id="L64">		extMetrics = metrics.extractMetrics(projectDir, LOC_method, CYCLO_method, WMC_class, NOM_class, operadorLogico);</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">		for (int i = 1; i &lt;= extMetrics.size(); i++) {</span>
+<span class="fc" id="L66">			String[] allMetrics = new String[10];</span>
+<span class="fc" id="L67">			allMetrics = extMetrics.get(i);</span>
+<span class="fc" id="L68">			expectedlList.add(allMetrics[6]);</span>
+		}
+<span class="fc" id="L70">	}</span>
+
+	@AfterAll
+	static void tearDownAfterClass() throws Exception {
+<span class="fc" id="L74">	}</span>
+
+	@BeforeEach
+	void setUp() throws Exception {
+<span class="fc" id="L78">	}</span>
+
+	@AfterEach
+	void tearDown() throws Exception {
+<span class="fc" id="L82">	}</span>
+
+	@Test
+	void testLocMethod() {
+<span class="fc" id="L86">		assertEquals(expectedlList, actualList);</span>
+
+<span class="fc" id="L88">	}</span>
+
+	@Test
+	void testNumberOfLines() {
+<span class="fc" id="L92">		assertEquals(numberLines, metrics.NumberOfLines(extMetrics));</span>
+
+<span class="fc" id="L94">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>GetMetricasTest (1) (07/05/2021 15:18:52)</div></body></html>

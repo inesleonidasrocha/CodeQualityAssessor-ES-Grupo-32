@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>CodeSmellsAnalyser.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JavaToExcelTest (1) (07/05/2021 15:43:36)</a> &gt; <a href="../../index.html" class="el_group">CodeQualityAssessor1</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">codeSmells</a> &gt; <span class="el_source">CodeSmellsAnalyser.java</span></div><h1>CodeSmellsAnalyser.java</h1><pre class="source lang-java linenums">package codeSmells;
+
+import java.util.HashMap;
+
+import gui.excelGui;
+import metrics.GetMetrics;
+
+public class CodeSmellsAnalyser extends Thread {
+	private HashMap&lt;Integer, String[]&gt; MCalls;
+	private static int LOC_method;
+	private static int CYCLO_method;
+	private static int WMC_class;
+	private static int NOM_class;
+	private static String oLogico;
+
+<span class="nc" id="L16">	public CodeSmellsAnalyser(HashMap&lt;Integer, String[]&gt; MCalls, int LOC_method, int CYCLO_method, int WMC_class,</span>
+			int NOM_class, String oLogico) {
+<span class="nc" id="L18">		this.MCalls = MCalls;</span>
+<span class="nc" id="L19">		this.LOC_method = LOC_method;</span>
+<span class="nc" id="L20">		this.CYCLO_method = CYCLO_method;</span>
+<span class="nc" id="L21">		this.WMC_class = WMC_class;</span>
+<span class="nc" id="L22">		this.NOM_class = NOM_class;</span>
+<span class="nc" id="L23">		this.oLogico = oLogico;</span>
+<span class="nc" id="L24">	}</span>
+
+	public HashMap&lt;Integer, String[]&gt; calculateIndicatores() {
+<span class="nc bnc" id="L27" title="All 2 branches missed.">		for (int i = 1; i &lt;= MCalls.size(); i++) {</span>
+<span class="nc" id="L28">			String[] metricData = new String[10];</span>
+<span class="nc" id="L29">			metricData = MCalls.get(i);</span>
+<span class="nc" id="L30">			metricData[8] = GetMetrics.LongMethod(LOC_method, CYCLO_method, Integer.valueOf(metricData[6]),</span>
+<span class="nc" id="L31">					Integer.valueOf(metricData[7]), oLogico);</span>
+<span class="nc" id="L32">			metricData[9] = GetMetrics.GodClass(WMC_class, NOM_class, Integer.valueOf(metricData[5]),</span>
+<span class="nc" id="L33">					Integer.valueOf(metricData[3]), oLogico);</span>
+<span class="nc" id="L34">			MCalls.put(i, metricData);</span>
+
+		}
+<span class="nc" id="L37">		return MCalls;</span>
+	}
+
+	public void run() {
+<span class="nc" id="L41">		excelGui.dataToExcel(calculateIndicatores());</span>
+<span class="nc" id="L42">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>JavaToExcelTest (1) (07/05/2021 15:43:36)</div></body></html>

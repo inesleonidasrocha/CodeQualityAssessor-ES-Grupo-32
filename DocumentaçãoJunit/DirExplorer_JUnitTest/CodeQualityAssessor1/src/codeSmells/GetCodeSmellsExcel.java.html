@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>GetCodeSmellsExcel.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">DirExplorerTest (1) (07/05/2021 15:34:30)</a> &gt; <a href="../../index.html" class="el_group">CodeQualityAssessor1</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">codeSmells</a> &gt; <span class="el_source">GetCodeSmellsExcel.java</span></div><h1>GetCodeSmellsExcel.java</h1><pre class="source lang-java linenums">package codeSmells;
+
+import java.io.FileInputStream;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import gui.ExcelReader;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Cell;
+import java.util.HashMap;
+
+<span class="nc" id="L16">public class GetCodeSmellsExcel {</span>
+	private FileInputStream file;
+
+	public String ReadCellData(int vRow, int vColumn) {
+<span class="nc" id="L20">		String value = null;</span>
+<span class="nc" id="L21">		Workbook workBook = null;</span>
+		try {
+<span class="nc" id="L23">			file = new FileInputStream(&quot;src/Code_Smells.xlsx&quot;);</span>
+<span class="nc" id="L24">			workBook = new XSSFWorkbook(file);</span>
+<span class="nc" id="L25">		} catch (FileNotFoundException e) {</span>
+<span class="nc" id="L26">			e.printStackTrace();</span>
+<span class="nc" id="L27">		} catch (IOException e1) {</span>
+<span class="nc" id="L28">			e1.printStackTrace();</span>
+		}
+<span class="nc" id="L30">		Sheet sheet = workBook.getSheetAt(0);</span>
+<span class="nc" id="L31">		Row row = sheet.getRow(vRow);</span>
+<span class="nc" id="L32">		Cell cell = row.getCell(vColumn);</span>
+<span class="nc" id="L33">		value = cell.toString();</span>
+<span class="nc" id="L34">		return value;</span>
+	}
+
+	public HashMap&lt;Integer, String[]&gt; getProfCodeSmells() {
+<span class="nc" id="L38">		ExcelReader.codeSmellsProf = new HashMap&lt;Integer, String[]&gt;();</span>
+<span class="nc bnc" id="L39" title="All 2 branches missed.">		for (int i = 1; i &lt; ExcelReader.FILELENGHT; i++) {</span>
+<span class="nc" id="L40">			ExcelReader.colunas = new String[4];</span>
+<span class="nc" id="L41">			ExcelReader.colunas[0] = this.ReadCellData(i, ExcelReader.GODROWNUMBER);</span>
+<span class="nc" id="L42">			ExcelReader.colunas[1] = this.ReadCellData(i, ExcelReader.LONGROWNUMBER);</span>
+<span class="nc" id="L43">			ExcelReader.colunas[2] = this.ReadCellData(i, ExcelReader.CLASSROWNUMBER);</span>
+<span class="nc" id="L44">			ExcelReader.colunas[3] = this.ReadCellData(i, ExcelReader.METHODROWNUMBER);</span>
+<span class="nc" id="L45">			ExcelReader.codeSmellsProf.put(i, ExcelReader.colunas);</span>
+		}
+<span class="nc" id="L47">		return ExcelReader.codeSmellsProf;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>DirExplorerTest (1) (07/05/2021 15:34:30)</div></body></html>

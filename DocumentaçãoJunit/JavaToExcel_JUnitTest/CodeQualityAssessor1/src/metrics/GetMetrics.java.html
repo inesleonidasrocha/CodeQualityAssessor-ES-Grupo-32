@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>GetMetrics.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JavaToExcelTest (1) (07/05/2021 15:43:36)</a> &gt; <a href="../../index.html" class="el_group">CodeQualityAssessor1</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">metrics</a> &gt; <span class="el_source">GetMetrics.java</span></div><h1>GetMetrics.java</h1><pre class="source lang-java linenums">package metrics;
+
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.stmt.ForEachStmt;
+import com.github.javaparser.ast.stmt.ForStmt;
+import com.github.javaparser.ast.stmt.IfStmt;
+import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.stmt.SwitchStmt;
+import com.github.javaparser.ast.stmt.WhileStmt;
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+<span class="nc" id="L22">public class GetMetrics {</span>
+	private static HashMap&lt;Integer, String[]&gt; metrics;
+<span class="fc" id="L24">	private static Integer metricsID = 0;</span>
+<span class="fc" id="L25">	private static CompilationUnit compUnit;</span>
+
+	public static boolean JavaFilesArePresent(File projectDir) {
+
+<span class="nc" id="L29">		DirExplorer a = new DirExplorer((level, path, file) -&gt; path.endsWith(&quot;.java&quot;), (level, path, file) -&gt; {</span>
+<span class="nc" id="L30">		});</span>
+<span class="nc" id="L31">		a.isDirEmpty(0, &quot;&quot;, projectDir);</span>
+<span class="nc" id="L32">		return a.isDirEmpty(0, &quot;&quot;, projectDir);</span>
+
+	}
+
+	public static HashMap&lt;Integer, String[]&gt; extractMetrics(File projectDir, int LOC_method, int CYCLO_method,
+			int WMC_class, int NOM_class, String oLogico) {
+<span class="fc" id="L38">		metrics = new HashMap&lt;Integer, String[]&gt;();</span>
+<span class="fc" id="L39">		new DirExplorer((level, path, file) -&gt; path.endsWith(&quot;.java&quot;), (level, path, file) -&gt; {</span>
+			try {
+<span class="nc" id="L41">				StaticJavaParser.getConfiguration().setAttributeComments(false);</span>
+
+<span class="nc" id="L43">				new VoidVisitorAdapter&lt;Object&gt;() {</span>
+					@Override
+					public void visit(ClassOrInterfaceDeclaration declaration, Object arg) {
+<span class="nc" id="L46">						super.visit(declaration, arg);</span>
+<span class="nc" id="L47">						String packageName = &quot;&quot;;</span>
+
+						try {
+<span class="nc" id="L50">							compUnit = StaticJavaParser.parse(file);</span>
+<span class="nc" id="L51">						} catch (FileNotFoundException e) {</span>
+							// TODO Auto-generated catch block
+<span class="nc" id="L53">							e.printStackTrace();</span>
+						}
+
+<span class="nc bnc" id="L56" title="All 2 branches missed.">						if (compUnit.getPackageDeclaration().isPresent()) {</span>
+<span class="nc" id="L57">							String packageBeforeTrim = compUnit.getPackageDeclaration().get().toString();</span>
+
+<span class="nc" id="L59">							String packageAfterTrim = packageBeforeTrim.trim().replace(&quot;;&quot;, &quot;&quot;);</span>
+
+<span class="nc" id="L61">							String[] pathSplit = path.split(&quot;/&quot;);</span>
+<span class="nc" id="L62">							String[] pName = { packageAfterTrim.replace(&quot;package &quot;, &quot;&quot;),</span>
+<span class="nc" id="L63">									pathSplit[pathSplit.length - 1] };</span>
+<span class="nc" id="L64">							packageName = pName[0];</span>
+
+<span class="nc" id="L66">						} else {</span>
+
+<span class="nc" id="L68">							String[] packageAfterS = path.split(&quot;/&quot;);</span>
+<span class="nc" id="L69">							String defaultPac = &quot;default package&quot;;</span>
+<span class="nc" id="L70">							String[] pName = { defaultPac, packageAfterS[packageAfterS.length - 1] };</span>
+<span class="nc" id="L71">							packageName = pName[0];</span>
+
+						}
+<span class="nc" id="L74">						List&lt;MethodDeclaration&gt; methods = declaration.getMethods();</span>
+
+<span class="nc bnc" id="L76" title="All 2 branches missed.">						for (MethodDeclaration a : methods) {</span>
+
+<span class="nc bnc" id="L78" title="All 2 branches missed.">							if (!declaration.isInterface()) {</span>
+<span class="nc" id="L79">								String[] allMetrics = new String[10];</span>
+<span class="nc" id="L80">								allMetrics[2] = packageName; // Package Name</span>
+<span class="nc" id="L81">								allMetrics[3] = NomClass(methods); // NOM_CLASS</span>
+<span class="nc" id="L82">								allMetrics[0] = declaration.getName().toString(); // Class Name</span>
+<span class="nc" id="L83">								allMetrics[4] = LOC_Class(declaration, arg); // LOC_Class</span>
+<span class="nc" id="L84">								allMetrics[5] = WMC_class(declaration, arg); // WMC_Class</span>
+<span class="nc" id="L85">								allMetrics[6] = LOC_method(a); // LOC_method</span>
+<span class="nc" id="L86">								allMetrics[7] = CYCLO_method(a);</span>
+<span class="nc" id="L87">								metricsID++;</span>
+
+								// Extraction of the parameters of the methods
+<span class="nc" id="L90">								String gParameters = a.getParameters().toString().replace(&quot;[&quot;, &quot;&quot;).replace(&quot;]&quot;, &quot;&quot;)</span>
+<span class="nc" id="L91">										.replace(&quot;,&quot;, &quot;&quot;);</span>
+<span class="nc" id="L92">								String[] parameterAfterSplit = gParameters.split(&quot; &quot;);</span>
+<span class="nc" id="L93">								String parameters = &quot;&quot;;</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">								for (int i = 0; i &lt; parameterAfterSplit.length; i = i + 2) {</span>
+<span class="nc" id="L95">									parameters = parameters + parameterAfterSplit[i] + &quot;,&quot;;</span>
+								}
+								// Method Name and its parameters
+<span class="nc" id="L98">								allMetrics[1] = a.getName().toString() + &quot;(&quot;</span>
+<span class="nc" id="L99">										+ parameters.substring(0, parameters.length() - 1) + &quot;)&quot;;</span>
+
+								// LongMethod and GodClass
+<span class="nc" id="L102">								allMetrics[8] = LongMethod(LOC_method, CYCLO_method, Integer.valueOf(allMetrics[6]),</span>
+<span class="nc" id="L103">										Integer.valueOf(allMetrics[7]), oLogico);</span>
+<span class="nc" id="L104">								allMetrics[9] = GodClass(WMC_class, NOM_class, Integer.valueOf(allMetrics[5]),</span>
+<span class="nc" id="L105">										Integer.valueOf(allMetrics[3]), oLogico);</span>
+<span class="nc" id="L106">								metrics.put(metricsID, allMetrics);</span>
+							}
+						}
+
+<span class="nc" id="L110">					}</span>
+
+<span class="nc" id="L112">				}.visit(StaticJavaParser.parse(file), null);</span>
+
+<span class="nc" id="L114">			} catch (IOException e) {</span>
+<span class="nc" id="L115">				new RuntimeException(e);</span>
+			}
+<span class="pc" id="L117">		}).explore(projectDir);</span>
+<span class="fc" id="L118">		metricsID = 0;</span>
+<span class="fc" id="L119">		return metrics;</span>
+	}
+
+	public static HashMap&lt;Integer, String[]&gt; calculateIndicatores(HashMap&lt;Integer, String[]&gt; extractedMetrics,
+			int LOC_method, int CYCLO_method, int WMC_class, int NOM_class, String oLogico) {
+<span class="nc bnc" id="L124" title="All 2 branches missed.">		for (int i = 1; i &lt;= extractedMetrics.size(); i++) {</span>
+<span class="nc" id="L125">			String[] metricData = new String[10];</span>
+<span class="nc" id="L126">			metricData = extractedMetrics.get(i);</span>
+<span class="nc" id="L127">			metricData[8] = LongMethod(LOC_method, CYCLO_method, Integer.valueOf(metricData[6]),</span>
+<span class="nc" id="L128">					Integer.valueOf(metricData[7]), oLogico);</span>
+<span class="nc" id="L129">			metricData[9] = GodClass(WMC_class, NOM_class, Integer.valueOf(metricData[5]),</span>
+<span class="nc" id="L130">					Integer.valueOf(metricData[3]), oLogico);</span>
+<span class="nc" id="L131">			extractedMetrics.put(i, metricData);</span>
+
+		}
+<span class="nc" id="L134">		return extractedMetrics;</span>
+	}
+
+	public static String NomClass(List&lt;MethodDeclaration&gt; method) {
+<span class="nc" id="L138">		return Integer.toString(method.size());</span>
+	}
+
+	public static String LOC_method(MethodDeclaration method) {
+<span class="nc" id="L142">		return Long.toString(method.toString().lines().count());</span>
+	}
+
+	public static String LongMethod(int LOC_method, int CYCLO_method, int ruleLoc, int ruleCyclo,
+			String logicalOperator) {
+<span class="nc bnc" id="L147" title="All 2 branches missed.">		if (logicalOperator.equals(&quot;AND&quot;)) {</span>
+<span class="nc bnc" id="L148" title="All 4 branches missed.">			if (ruleLoc &gt; LOC_method &amp;&amp; ruleCyclo &gt; CYCLO_method)</span>
+<span class="nc" id="L149">				return &quot;True&quot;;</span>
+			else
+<span class="nc" id="L151">				return &quot;False&quot;;</span>
+		} else {
+<span class="nc bnc" id="L153" title="All 4 branches missed.">			if (ruleLoc &gt; LOC_method || ruleCyclo &gt; CYCLO_method)</span>
+<span class="nc" id="L154">				return &quot;True&quot;;</span>
+			else
+<span class="nc" id="L156">				return &quot;False&quot;;</span>
+		}
+	}
+
+	public static String GodClass(int WMC_class, int NOM_class, int ruleWmc, int ruleNom, String logicalOperator) {
+<span class="nc bnc" id="L161" title="All 2 branches missed.">		if (logicalOperator.equals(&quot;AND&quot;)) {</span>
+<span class="nc bnc" id="L162" title="All 4 branches missed.">			if (ruleWmc &gt; WMC_class &amp;&amp; ruleNom &gt; NOM_class)</span>
+<span class="nc" id="L163">				return &quot;True&quot;;</span>
+			else
+<span class="nc" id="L165">				return &quot;False&quot;;</span>
+		} else {
+<span class="nc bnc" id="L167" title="All 4 branches missed.">			if (ruleWmc &gt; WMC_class || ruleNom &gt; NOM_class)</span>
+<span class="nc" id="L168">				return &quot;True&quot;;</span>
+			else
+<span class="nc" id="L170">				return &quot;False&quot;;</span>
+		}
+	}
+
+	public static int NumberOfPack(HashMap&lt;Integer, String[]&gt; HashMetrics) {
+<span class="nc" id="L175">		List&lt;String&gt; pack = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">		for (int i = 1; i &lt; HashMetrics.size(); i++) {</span>
+<span class="nc" id="L177">			String[] allMetrics = HashMetrics.get(i);</span>
+
+<span class="nc bnc" id="L179" title="All 2 branches missed.">			if (!pack.contains(allMetrics[2])) {</span>
+<span class="nc" id="L180">				pack.add(allMetrics[2]);</span>
+
+			}
+		}
+<span class="nc" id="L184">		return pack.size();</span>
+	}
+
+	public static int NumberOfClasses(HashMap&lt;Integer, String[]&gt; HashMetrics) {
+<span class="nc" id="L188">		List&lt;String&gt; pack = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L189" title="All 2 branches missed.">		for (int i = 1; i &lt; HashMetrics.size(); i++) {</span>
+<span class="nc" id="L190">			String[] allMetrics = HashMetrics.get(i);</span>
+<span class="nc bnc" id="L191" title="All 2 branches missed.">			if (!pack.contains(allMetrics[0])) {</span>
+<span class="nc" id="L192">				pack.add(allMetrics[0]);</span>
+
+			}
+		}
+<span class="nc" id="L196">		return pack.size();</span>
+	}
+
+	public static int NumberOfLines(HashMap&lt;Integer, String[]&gt; HashMetrics) {
+<span class="nc" id="L200">		List&lt;String&gt; pack = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L201">		int lines = 0;</span>
+<span class="nc bnc" id="L202" title="All 2 branches missed.">		for (int i = 1; i &lt; HashMetrics.size(); i++) {</span>
+<span class="nc" id="L203">			String[] allMetrics = HashMetrics.get(i);</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">			if (!pack.contains(allMetrics[0])) {</span>
+<span class="nc" id="L205">				pack.add(allMetrics[0]);</span>
+<span class="nc" id="L206">				lines = lines + Integer.valueOf(allMetrics[4]);</span>
+			}
+		}
+<span class="nc" id="L209">		return lines;</span>
+	}
+
+	public static int NumberOfMethods(HashMap&lt;Integer, String[]&gt; HashMetrics) {
+<span class="nc" id="L213">		return HashMetrics.size();</span>
+	}
+
+	public static String WMC_class(ClassOrInterfaceDeclaration declaration, Object arg) {
+<span class="nc" id="L217">		int complexity = 0;</span>
+
+<span class="nc bnc" id="L219" title="All 2 branches missed.">		for (IfStmt ifStmt : declaration.getChildNodesByType(IfStmt.class)) {</span>
+<span class="nc" id="L220">			complexity++;</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">			if (ifStmt.getElseStmt().isPresent()) {</span>
+
+<span class="nc" id="L223">				Statement elseStmt = ifStmt.getElseStmt().get();</span>
+<span class="nc bnc" id="L224" title="All 2 branches missed.">				if (elseStmt instanceof IfStmt) {</span>
+
+				} else {
+<span class="nc" id="L227">					complexity++;</span>
+				}
+			}
+		}
+<span class="nc" id="L231">		complexity = complexity + declaration.findAll(WhileStmt.class).size();</span>
+<span class="nc" id="L232">		complexity = complexity + declaration.findAll(ForStmt.class).size();</span>
+<span class="nc" id="L233">		complexity = complexity + declaration.findAll(ForEachStmt.class).size();</span>
+<span class="nc" id="L234">		complexity = complexity + declaration.findAll(SwitchStmt.class).size();</span>
+
+<span class="nc" id="L236">		return Integer.toString(complexity);</span>
+	}
+
+	public static String LOC_Class(ClassOrInterfaceDeclaration classDeclaration, Object arg) {
+<span class="nc" id="L240">		int blankLines = nBlank(classDeclaration);</span>
+<span class="nc" id="L241">		int totalLines = (int) classDeclaration.toString().lines().count();</span>
+
+<span class="nc" id="L243">		return Integer.toString(totalLines - blankLines);</span>
+
+	}
+
+	private static int nBlank(ClassOrInterfaceDeclaration classDeclaration) {
+<span class="nc" id="L248">		int nBlank = 0;</span>
+<span class="nc" id="L249">		Object[] lines = classDeclaration.toString().lines().toArray();</span>
+<span class="nc bnc" id="L250" title="All 2 branches missed.">		for (int i = 0; i &lt; lines.length; i++) {</span>
+<span class="nc bnc" id="L251" title="All 2 branches missed.">			if (lines[i].toString().isBlank())</span>
+<span class="nc" id="L252">				nBlank++;</span>
+		}
+<span class="nc" id="L254">		return nBlank;</span>
+	}
+
+	public static String CYCLO_method(MethodDeclaration method) {
+<span class="nc" id="L258">		int complexity = 0;</span>
+
+<span class="nc bnc" id="L260" title="All 2 branches missed.">		for (IfStmt ifStmt : method.getChildNodesByType(IfStmt.class)) {</span>
+
+<span class="nc" id="L262">			complexity++;</span>
+<span class="nc bnc" id="L263" title="All 2 branches missed.">			if (ifStmt.getElseStmt().isPresent()) {</span>
+
+<span class="nc" id="L265">				Statement elseStmt = ifStmt.getElseStmt().get();</span>
+<span class="nc bnc" id="L266" title="All 2 branches missed.">				if (elseStmt instanceof IfStmt) {</span>
+
+				} else {
+
+<span class="nc" id="L270">					complexity++;</span>
+				}
+			}
+		}
+<span class="nc" id="L274">		complexity = complexity + method.findAll(WhileStmt.class).size();</span>
+<span class="nc" id="L275">		complexity = complexity + method.findAll(ForStmt.class).size();</span>
+<span class="nc" id="L276">		complexity = complexity + method.findAll(ForEachStmt.class).size();</span>
+<span class="nc" id="L277">		complexity = complexity + method.findAll(SwitchStmt.class).size();</span>
+
+<span class="nc" id="L279">		return Integer.toString(complexity);</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>JavaToExcelTest (1) (07/05/2021 15:43:36)</div></body></html>

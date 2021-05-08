@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>DirExplorer.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">DirExplorerTest (1) (07/05/2021 15:34:30)</a> &gt; <a href="../../index.html" class="el_group">CodeQualityAssessor1</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">metrics</a> &gt; <span class="el_source">DirExplorer.java</span></div><h1>DirExplorer.java</h1><pre class="source lang-java linenums">package metrics;
+
+import java.io.File;
+
+public class DirExplorer {
+<span class="fc" id="L6">	private static int numberJavaFiles = 0;</span>
+
+	public interface FileHandler {
+		void handle(int level, String path, File file);
+	}
+
+	public interface Filter {
+		boolean interested(int level, String path, File file);
+	}
+
+	private FileHandler fileHandler;
+	private Filter filter;
+
+<span class="fc" id="L19">	public DirExplorer(Filter filter, FileHandler fileHandler) {</span>
+<span class="fc" id="L20">		this.filter = filter;</span>
+<span class="fc" id="L21">		this.fileHandler = fileHandler;</span>
+<span class="fc" id="L22">	}</span>
+
+	public void explore(File root) {
+<span class="fc" id="L25">		explore(0, &quot;&quot;, root);</span>
+<span class="fc" id="L26">	}</span>
+
+	private void explore(int level, String path, File file) {
+<span class="fc bfc" id="L29" title="All 2 branches covered.">		if (file.isDirectory()) {</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">			for (File child : file.listFiles()) {</span>
+<span class="fc" id="L31">				explore(level + 1, path + &quot;/&quot; + child.getName(), child);</span>
+			}
+<span class="fc" id="L33">		} else {</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">			if (filter.interested(level, path, file)) {</span>
+<span class="fc" id="L35">				fileHandler.handle(level, path, file);</span>
+			}
+		}
+<span class="fc" id="L38">	}</span>
+
+	public boolean isDirEmpty(int level, String path, File file) {
+
+<span class="fc bfc" id="L42" title="All 2 branches covered.">		if (file.isDirectory()) {</span>
+
+<span class="fc bfc" id="L44" title="All 2 branches covered.">			for (File child : file.listFiles()) {</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">				if (child.getPath().endsWith(&quot;.java&quot;)) {</span>
+<span class="fc" id="L46">					numberJavaFiles++;</span>
+<span class="fc" id="L47">					break;</span>
+				}
+<span class="fc" id="L49">				isDirEmpty(level + 1, path + &quot;/&quot; + child.getName(), child);</span>
+
+			}
+<span class="fc" id="L52">		} else {</span>
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">			if (filter.interested(level, path, file)) {</span>
+<span class="nc" id="L54">				fileHandler.handle(level, path, file);</span>
+			}
+		}
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">		return numberJavaFiles != 0;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>DirExplorerTest (1) (07/05/2021 15:34:30)</div></body></html>

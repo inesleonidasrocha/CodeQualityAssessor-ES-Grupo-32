@@ -1,0 +1,898 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>Gui.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">GetMetricasTest (1) (07/05/2021 15:18:52)</a> &gt; <a href="../../index.html" class="el_group">CodeQualityAssessor1</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">gui</a> &gt; <span class="el_source">Gui.java</span></div><h1>Gui.java</h1><pre class="source lang-java linenums">package gui;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+
+import java.awt.Font;
+import java.awt.Image;
+import java.awt.SystemColor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.HashMap;
+
+import javax.imageio.ImageIO;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.plot.PiePlot;
+import org.jfree.chart.plot.PiePlot3D;
+import org.jfree.chart.util.Rotation;
+import org.jfree.data.general.DefaultPieDataset;
+
+import codeSmells.CodeSmellsAnalyser;
+import metrics.GetMetrics;
+import metrics.JavaToExcel;
+
+@SuppressWarnings(&quot;deprecation&quot;)
+public class Gui extends javax.swing.JFrame {
+
+<span class="nc" id="L57">	private MainGui frameProduct = new MainGui();</span>
+<span class="nc" id="L58">	private excelGui excelGui = new excelGui();</span>
+	private JFrame hist;
+	private JTextField textField;
+	private JLabel Nlinhas;
+	private JLabel Npackages;
+	private JLabel Nclasses;
+	private JLabel Nmethods;
+<span class="nc" id="L65">	private String path = &quot;&quot;;</span>
+<span class="nc" id="L66">	private File file = new File(path);</span>
+<span class="nc" id="L67">	private JFileChooser chooser = new JFileChooser();</span>
+<span class="nc" id="L68">	private int LOC_method = 50;</span>
+<span class="nc" id="L69">	private int CYCLO_method = 10;</span>
+<span class="nc" id="L70">	private int WMC_class = 50;</span>
+<span class="nc" id="L71">	private int NOM_class = 10;</span>
+	private static HashMap&lt;Integer, String[]&gt; methodID;
+	private JPanel importProject;
+	// Grafico
+	private JLabel GVPositive;
+	private JLabel GVNegative;
+	private JLabel GFPositive;
+	private JLabel GFNegative;
+	private JLabel LVPositive;
+	private JLabel LVNegative;
+	private JLabel LFPositive;
+	private JLabel LFNegative;
+	private JPanel graph;
+
+	private ChartPanel chartPanelGod;
+	private ChartPanel chartPanelLong;
+<span class="nc" id="L87">	private DefaultPieDataset&lt;String&gt; pieDataSet2 = new DefaultPieDataset&lt;String&gt;();</span>
+<span class="nc" id="L88">	private DefaultPieDataset&lt;String&gt; pieDataSetGod = new DefaultPieDataset&lt;String&gt;();</span>
+
+<span class="nc" id="L90">	private int VPGod = 0;</span>
+<span class="nc" id="L91">	private int VNGod = 0;</span>
+<span class="nc" id="L92">	private int FPGod = 0;</span>
+<span class="nc" id="L93">	private int FNGod = 0;</span>
+<span class="nc" id="L94">	private int VPLong = 0;</span>
+<span class="nc" id="L95">	private int VNLong = 0;</span>
+<span class="nc" id="L96">	private int FPLong = 0;</span>
+<span class="nc" id="L97">	private int FNLong = 0;</span>
+	// Criar regra
+<span class="nc" id="L99">	private JFormattedTextField textField_LocMethod = new JFormattedTextField();</span>
+<span class="nc" id="L100">	private JFormattedTextField textField_CycloMethod = new JFormattedTextField();</span>
+<span class="nc" id="L101">	private JTextField textField_WmcClass = new JTextField();</span>
+<span class="nc" id="L102">	private JTextField textField_NomClass = new JTextField();</span>
+<span class="nc" id="L103">	private String oLogico = &quot;AND&quot;; // operador logico</span>
+<span class="nc" id="L104">	private Gui guiFrame = this;</span>
+<span class="nc" id="L105">	private boolean isJasml = true;</span>
+
+<span class="nc" id="L107">	public Gui() throws IOException {</span>
+<span class="nc" id="L108">		initialize();</span>
+<span class="nc" id="L109">	}</span>
+
+	public void dataToGraphic(HashMap&lt;Integer, String[]&gt; methodID) throws IOException {
+
+<span class="nc" id="L113">		ExcelReader rc = new ExcelReader(methodID);</span>
+<span class="nc" id="L114">		rc.getCodeSmell();</span>
+
+<span class="nc" id="L116">		graph.removeAll();</span>
+<span class="nc" id="L117">		VPGod = rc.indicatorToGui(&quot;VPGod&quot;);</span>
+<span class="nc" id="L118">		VNGod = rc.indicatorToGui(&quot;VNGod&quot;);</span>
+<span class="nc" id="L119">		FPGod = rc.indicatorToGui(&quot;FPGod&quot;);</span>
+<span class="nc" id="L120">		FNGod = rc.indicatorToGui(&quot;FNGod&quot;);</span>
+<span class="nc" id="L121">		VPLong = rc.indicatorToGui(&quot;VPLong&quot;);</span>
+<span class="nc" id="L122">		VNLong = rc.indicatorToGui(&quot;VNLong&quot;);</span>
+<span class="nc" id="L123">		FPLong = rc.indicatorToGui(&quot;FPLong&quot;);</span>
+<span class="nc" id="L124">		FNLong = rc.indicatorToGui(&quot;FNLong&quot;);</span>
+
+<span class="nc bnc" id="L126" title="All 8 branches missed.">		if (rc.indicatorToGui(&quot;VPGod&quot;) != 0 || rc.indicatorToGui(&quot;VNGod&quot;) != 0 || FPGod != 0 || FNGod != 0</span>
+<span class="nc bnc" id="L127" title="All 8 branches missed.">				|| VPLong != 0 || VNLong != 0 || FPLong != 0 || FNLong != 0) {</span>
+<span class="nc" id="L128">			isJasml = true;</span>
+
+<span class="nc" id="L130">			JSeparator separator = new JSeparator();</span>
+<span class="nc" id="L131">			separator.setOrientation(SwingConstants.VERTICAL);</span>
+<span class="nc" id="L132">			separator.setBounds(522, 6, 12, 411);</span>
+<span class="nc" id="L133">			graph.add(separator);</span>
+
+<span class="nc" id="L135">			JLabel godClass = new JLabel(&quot;IS_GOD_CLASS&quot;);</span>
+<span class="nc" id="L136">			godClass.setBounds(199, 6, 113, 16);</span>
+<span class="nc" id="L137">			graph.add(godClass);</span>
+
+<span class="nc" id="L139">			JLabel longMethod = new JLabel(&quot;IS_LONG_METHOD&quot;);</span>
+<span class="nc" id="L140">			longMethod.setBounds(766, 6, 148, 16);</span>
+<span class="nc" id="L141">			graph.add(longMethod);</span>
+<span class="nc" id="L142">			GVPositive = new JLabel(&quot;Numero total de Verdadeiros Positivos: &quot; + VPGod);</span>
+<span class="nc" id="L143">			GVPositive.setBounds(18, 61, 274, 21);</span>
+<span class="nc" id="L144">			graph.add(GVPositive);</span>
+
+<span class="nc" id="L146">			GVNegative = new JLabel(&quot;Numero total de Verdadeiros Negativos: &quot; + VNGod);</span>
+<span class="nc" id="L147">			GVNegative.setBounds(18, 83, 274, 21);</span>
+<span class="nc" id="L148">			graph.add(GVNegative);</span>
+
+<span class="nc" id="L150">			GFPositive = new JLabel(&quot;Numero total de Falsos Positivos: &quot; + FPGod);</span>
+<span class="nc" id="L151">			GFPositive.setBounds(18, 106, 274, 21);</span>
+<span class="nc" id="L152">			graph.add(GFPositive);</span>
+
+<span class="nc" id="L154">			GFNegative = new JLabel(&quot;Numero total de Falsos Negativos: &quot; + FNGod);</span>
+<span class="nc" id="L155">			GFNegative.setBounds(18, 128, 274, 21);</span>
+<span class="nc" id="L156">			graph.add(GFNegative);</span>
+
+<span class="nc" id="L158">			LVPositive = new JLabel(&quot;Numero total de Verdadeiros Positivos: &quot; + VPLong);</span>
+<span class="nc" id="L159">			LVPositive.setBounds(546, 63, 274, 21);</span>
+<span class="nc" id="L160">			graph.add(LVPositive);</span>
+
+<span class="nc" id="L162">			LVNegative = new JLabel(&quot;Numero total de Verdadeiros Negativos: &quot; + VNLong);</span>
+<span class="nc" id="L163">			LVNegative.setBounds(546, 85, 274, 21);</span>
+<span class="nc" id="L164">			graph.add(LVNegative);</span>
+
+<span class="nc" id="L166">			LFPositive = new JLabel(&quot;Numero total de Falsos Positivos: &quot; + FPLong);</span>
+<span class="nc" id="L167">			LFPositive.setBounds(546, 108, 274, 21);</span>
+<span class="nc" id="L168">			graph.add(LFPositive);</span>
+
+<span class="nc" id="L170">			LFNegative = new JLabel(&quot;Numero total de Falsos Negativos: &quot; + FNLong);</span>
+<span class="nc" id="L171">			LFNegative.setBounds(546, 130, 274, 21);</span>
+<span class="nc" id="L172">			graph.add(LFNegative);</span>
+
+<span class="nc" id="L174">			createGraph();</span>
+<span class="nc" id="L175">		} else {</span>
+<span class="nc" id="L176">			isJasml = false;</span>
+<span class="nc" id="L177">			JLabel pieImage = new JLabel(&quot;&quot;);</span>
+<span class="nc" id="L178">			pieImage.setIcon(new ImageIcon(Gui.class.getResource(&quot;Pie-Chart250.png&quot;)));</span>
+<span class="nc" id="L179">			pieImage.setBounds(29, 261, 345, 156);</span>
+<span class="nc" id="L180">			graph.add(pieImage);</span>
+<span class="nc" id="L181">			JLabel pie = new JLabel(&quot;Calculo de graficos indisponivel para este projeto.&quot;);</span>
+<span class="nc" id="L182">			pie.setBounds(270, 161, 1000, 100);</span>
+<span class="nc" id="L183">			pie.setFont(new Font(&quot;Lucida Grande&quot;, Font.BOLD, 23));</span>
+<span class="nc" id="L184">			graph.add(pie);</span>
+
+		}
+
+<span class="nc" id="L188">	}</span>
+
+	public void createGraph() {
+<span class="nc" id="L191">		pieDataSet2.clear();</span>
+<span class="nc" id="L192">		pieDataSetGod.clear();</span>
+<span class="nc" id="L193">		pieDataSetGod.setValue(&quot;Verdadeiro Positivo&quot;, Double.valueOf(VPGod));</span>
+<span class="nc" id="L194">		pieDataSetGod.setValue(&quot;Verdadeiro Negativo&quot;, Double.valueOf(VNGod));</span>
+<span class="nc" id="L195">		pieDataSetGod.setValue(&quot;Falso Positivo&quot;, Double.valueOf(FPGod));</span>
+<span class="nc" id="L196">		pieDataSetGod.setValue(&quot;Falso Negativo&quot;, Double.valueOf(FNGod));</span>
+
+<span class="nc" id="L198">		JFreeChart chartGod = ChartFactory.createPieChart3D(&quot;God Class Chart&quot;, pieDataSetGod, true, true, true);</span>
+
+<span class="nc" id="L200">		PiePlot3D plotGod = (PiePlot3D) chartGod.getPlot();</span>
+<span class="nc" id="L201">		plotGod.setStartAngle(0);</span>
+<span class="nc" id="L202">		plotGod.setDirection(Rotation.CLOCKWISE);</span>
+<span class="nc" id="L203">		plotGod.setForegroundAlpha(0.8f);</span>
+<span class="nc" id="L204">		chartPanelGod = new ChartPanel(chartGod);</span>
+<span class="nc" id="L205">		chartPanelGod.setBounds(18, 179, 491, 227);</span>
+<span class="nc" id="L206">		chartPanelGod.setVisible(true);</span>
+<span class="nc" id="L207">		graph.add(chartPanelGod);</span>
+
+		// cores do grafico god class
+<span class="nc" id="L210">		plotGod.setSectionPaint(&quot;Verdadeiro Positivo&quot;, Color.GREEN);</span>
+<span class="nc" id="L211">		plotGod.setSectionPaint(&quot;Verdadeiro Negativo&quot;, new Color(0, 181, 37));</span>
+<span class="nc" id="L212">		plotGod.setSectionPaint(&quot;Falso Positivo&quot;, new Color(245, 55, 55));</span>
+<span class="nc" id="L213">		plotGod.setSectionPaint(&quot;Falso Negativo&quot;, new Color(247, 160, 4));</span>
+
+<span class="nc" id="L215">		pieDataSet2.setValue(&quot;Verdadeiro Positivo&quot;, Double.valueOf(VPLong));</span>
+<span class="nc" id="L216">		pieDataSet2.setValue(&quot;Verdadeiro Negativo&quot;, Double.valueOf(VNLong));</span>
+<span class="nc" id="L217">		pieDataSet2.setValue(&quot;Falso Positivo&quot;, Double.valueOf(FPLong));</span>
+<span class="nc" id="L218">		pieDataSet2.setValue(&quot;Falso Negativo&quot;, Double.valueOf(FNLong));</span>
+
+<span class="nc" id="L220">		JFreeChart chartLong = ChartFactory.createPieChart3D(&quot;Long Method Chart &quot;, pieDataSet2, true, true, true);</span>
+
+		@SuppressWarnings(&quot;rawtypes&quot;)
+<span class="nc" id="L223">		PiePlot plotLong = (PiePlot) chartLong.getPlot();</span>
+<span class="nc" id="L224">		chartPanelLong = new ChartPanel(chartLong);</span>
+<span class="nc" id="L225">		chartPanelLong.setBounds(546, 179, 532, 227);</span>
+<span class="nc" id="L226">		plotLong.setStartAngle(0);</span>
+<span class="nc" id="L227">		plotLong.setDirection(Rotation.CLOCKWISE);</span>
+<span class="nc" id="L228">		plotLong.setForegroundAlpha(0.8f);</span>
+<span class="nc" id="L229">		chartPanelLong = new ChartPanel(chartLong);</span>
+<span class="nc" id="L230">		chartPanelLong.setBounds(546, 179, 532, 227);</span>
+<span class="nc" id="L231">		chartPanelLong.setVisible(true);</span>
+<span class="nc" id="L232">		graph.add(chartPanelLong);</span>
+
+		// Cores do grafico long method
+<span class="nc" id="L235">		plotLong.setSectionPaint(&quot;Verdadeiro Positivo&quot;, Color.GREEN);</span>
+<span class="nc" id="L236">		plotLong.setSectionPaint(&quot;Verdadeiro Negativo&quot;, new Color(0, 181, 37));</span>
+<span class="nc" id="L237">		plotLong.setSectionPaint(&quot;Falso Positivo&quot;, new Color(245, 55, 55));</span>
+<span class="nc" id="L238">		plotLong.setSectionPaint(&quot;Falso Negativo&quot;, new Color(247, 160, 4));</span>
+
+<span class="nc" id="L240">	}</span>
+
+	public void creatLong() {
+
+<span class="nc" id="L244">		JFrame longMethod = new JFrame(&quot;Long Method&quot;);</span>
+<span class="nc" id="L245">		longMethod.getContentPane().setForeground(SystemColor.controlHighlight);</span>
+<span class="nc" id="L246">		longMethod.setBounds(100, 100, 473, 192);</span>
+<span class="nc" id="L247">		longMethod.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L248">		longMethod.getContentPane().setLayout(null);</span>
+
+<span class="nc" id="L250">		JLabel loc = new JLabel(&quot;LOC_method  &gt;&quot;);</span>
+<span class="nc" id="L251">		loc.setFont(new Font(&quot;Tahoma&quot;, Font.PLAIN, 14));</span>
+<span class="nc" id="L252">		loc.setBounds(10, 56, 118, 24);</span>
+<span class="nc" id="L253">		longMethod.getContentPane().add(loc);</span>
+
+<span class="nc" id="L255">		JLabel cycloMethod = new JLabel(&quot;CYCLO_method  &gt;&quot;);</span>
+<span class="nc" id="L256">		cycloMethod.setFont(new Font(&quot;Tahoma&quot;, Font.PLAIN, 14));</span>
+<span class="nc" id="L257">		cycloMethod.setBounds(262, 51, 138, 35);</span>
+<span class="nc" id="L258">		longMethod.getContentPane().add(cycloMethod);</span>
+
+<span class="nc" id="L260">		textField_LocMethod = new JFormattedTextField(LOC_method);</span>
+<span class="nc" id="L261">		textField_LocMethod.setBounds(120, 61, 50, 19);</span>
+<span class="nc" id="L262">		longMethod.getContentPane().add(textField_LocMethod);</span>
+<span class="nc" id="L263">		textField_LocMethod.setColumns(10);</span>
+<span class="nc" id="L264">		textField_LocMethod.addKeyListener(new KeyAdapter() {</span>
+			@Override
+			public void keyPressed(KeyEvent e) {
+
+<span class="nc bnc" id="L268" title="All 4 branches missed.">				if (e.getKeyChar() &gt;= '0' &amp;&amp; e.getKeyChar() &lt;= '9') {</span>
+<span class="nc" id="L269">					textField_LocMethod.setEditable(true);</span>
+
+<span class="nc" id="L271">				} else {</span>
+<span class="nc" id="L272">					textField_LocMethod.setEditable(false);</span>
+<span class="nc bnc" id="L273" title="All 2 branches missed.">					if (e.getExtendedKeyCode() == KeyEvent.VK_BACK_SPACE</span>
+<span class="nc bnc" id="L274" title="All 2 branches missed.">							|| e.getExtendedKeyCode() == KeyEvent.VK_DELETE) {</span>
+<span class="nc" id="L275">						textField_LocMethod.setEditable(true);</span>
+					}
+				}
+<span class="nc" id="L278">			}</span>
+
+		});
+<span class="nc" id="L281">		textField_CycloMethod = new JFormattedTextField(CYCLO_method);</span>
+<span class="nc" id="L282">		textField_CycloMethod.setColumns(10);</span>
+<span class="nc" id="L283">		textField_CycloMethod.setBounds(399, 61, 50, 19);</span>
+<span class="nc" id="L284">		longMethod.getContentPane().add(textField_CycloMethod);</span>
+<span class="nc" id="L285">		textField_CycloMethod.addKeyListener(new KeyAdapter() {</span>
+			@Override
+			public void keyPressed(KeyEvent e) {
+
+<span class="nc bnc" id="L289" title="All 4 branches missed.">				if (e.getKeyChar() &gt;= '0' &amp;&amp; e.getKeyChar() &lt;= '9') {</span>
+<span class="nc" id="L290">					textField_CycloMethod.setEditable(true);</span>
+
+<span class="nc" id="L292">				} else {</span>
+<span class="nc" id="L293">					textField_CycloMethod.setEditable(false);</span>
+<span class="nc bnc" id="L294" title="All 2 branches missed.">					if (e.getExtendedKeyCode() == KeyEvent.VK_BACK_SPACE</span>
+<span class="nc bnc" id="L295" title="All 2 branches missed.">							|| e.getExtendedKeyCode() == KeyEvent.VK_DELETE) {</span>
+<span class="nc" id="L296">						textField_CycloMethod.setEditable(true);</span>
+					}
+				}
+<span class="nc" id="L299">			}</span>
+
+		});
+<span class="nc" id="L302">		JLabel longMethodLabel = new JLabel(&quot;Long Method&quot;);</span>
+<span class="nc" id="L303">		longMethodLabel.setFont(new Font(&quot;Arial Black&quot;, Font.PLAIN, 16));</span>
+<span class="nc" id="L304">		longMethodLabel.setBounds(10, 10, 133, 31);</span>
+<span class="nc" id="L305">		longMethod.getContentPane().add(longMethodLabel);</span>
+
+<span class="nc" id="L307">		JButton createButton = new JButton(&quot;Create&quot;);</span>
+<span class="nc" id="L308">		createButton.setFont(new Font(&quot;Arial Black&quot;, Font.PLAIN, 12));</span>
+<span class="nc" id="L309">		createButton.setBounds(325, 113, 85, 21);</span>
+<span class="nc" id="L310">		longMethod.getContentPane().add(createButton);</span>
+<span class="nc" id="L311">		createButton.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+
+<span class="nc bnc" id="L314" title="All 2 branches missed.">				if (!file.exists()) {</span>
+<span class="nc" id="L315">					JOptionPane.showMessageDialog(null, &quot;Por favor, introduza um projeto.&quot;);</span>
+<span class="nc" id="L316">				} else {</span>
+
+<span class="nc bnc" id="L318" title="All 4 branches missed.">					if (!textField_LocMethod.getText().equals(&quot;0&quot;) &amp;&amp; !textField_CycloMethod.getText().equals(&quot;0&quot;)) {</span>
+
+<span class="nc" id="L320">						LOC_method = Integer.valueOf(textField_LocMethod.getText());</span>
+<span class="nc" id="L321">						CYCLO_method = Integer.valueOf(textField_CycloMethod.getText());</span>
+
+<span class="nc" id="L323">						(new CodeSmellsAnalyser(methodID, LOC_method, CYCLO_method, WMC_class, NOM_class, oLogico))</span>
+<span class="nc" id="L324">								.run();</span>
+<span class="nc" id="L325">						longMethod.dispose();</span>
+						try {
+<span class="nc bnc" id="L327" title="All 2 branches missed.">							if (isJasml == true) {</span>
+
+<span class="nc" id="L329">								HashMap&lt;Integer, String[]&gt; metrics = GetMetrics.calculateIndicatores(methodID,</span>
+<span class="nc" id="L330">										LOC_method, CYCLO_method, WMC_class, NOM_class, oLogico);</span>
+<span class="nc" id="L331">								dataToGraphic(metrics);</span>
+
+							}
+<span class="nc" id="L334">						} catch (IOException e2) {</span>
+							// TODO Auto-generated catch block
+<span class="nc" id="L336">							e2.printStackTrace();</span>
+						}
+						try {
+<span class="nc" id="L339">							saveRules(path, oLogico, textField_LocMethod.getText(), textField_CycloMethod.getText(),</span>
+<span class="nc" id="L340">									&quot;LOC_method&quot;, &quot;CYCLO_method&quot;);</span>
+<span class="nc" id="L341">						} catch (IOException e1) {</span>
+							// TODO Auto-generated catch block
+<span class="nc" id="L343">							e1.printStackTrace();</span>
+						}
+<span class="nc" id="L345">						JOptionPane.showMessageDialog(null, &quot;Concluï¿½do&quot;);</span>
+<span class="nc" id="L346">					} else {</span>
+<span class="nc" id="L347">						JFrame frame2 = new JFrame(&quot;&quot;);</span>
+<span class="nc" id="L348">						JOptionPane.showMessageDialog(frame2, &quot;Por favor, introduza valores superiores a 0!&quot;,</span>
+<span class="nc" id="L349">								&quot;CodeQualityAssessor&quot;, JOptionPane.WARNING_MESSAGE);</span>
+
+					}
+
+				}
+
+<span class="nc" id="L355">			}</span>
+		});
+
+<span class="nc" id="L358">		DefaultComboBoxModel&lt;String&gt; model = new DefaultComboBoxModel&lt;String&gt;();</span>
+<span class="nc" id="L359">		model.addElement(&quot;AND&quot;);</span>
+<span class="nc" id="L360">		model.addElement(&quot;OR&quot;);</span>
+<span class="nc" id="L361">		JComboBox&lt;String&gt; list = new JComboBox&lt;String&gt;(model);</span>
+<span class="nc" id="L362">		list.setBounds(195, 61, 70, 19);</span>
+<span class="nc" id="L363">		longMethod.getContentPane().add(list);</span>
+<span class="nc" id="L364">		list.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L366">				oLogico = (String) list.getSelectedItem();</span>
+<span class="nc" id="L367">			}</span>
+		});
+<span class="nc" id="L369">		longMethod.setVisible(true);</span>
+<span class="nc" id="L370">	}</span>
+
+	public void creatGod() {
+<span class="nc" id="L373">		JFrame godClassFrame = new JFrame(&quot;God Class&quot;);</span>
+<span class="nc" id="L374">		godClassFrame.getContentPane().setForeground(SystemColor.controlHighlight);</span>
+<span class="nc" id="L375">		godClassFrame.setBounds(100, 100, 473, 192);</span>
+<span class="nc" id="L376">		godClassFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L377">		godClassFrame.getContentPane().setLayout(null);</span>
+
+<span class="nc" id="L379">		JLabel loc = new JLabel(&quot;WMC_class  &gt;&quot;);</span>
+<span class="nc" id="L380">		loc.setFont(new Font(&quot;Tahoma&quot;, Font.PLAIN, 14));</span>
+<span class="nc" id="L381">		loc.setBounds(10, 56, 118, 24);</span>
+<span class="nc" id="L382">		godClassFrame.getContentPane().add(loc);</span>
+
+<span class="nc" id="L384">		JLabel nomClassLabel = new JLabel(&quot;NOM_class  &gt;&quot;);</span>
+<span class="nc" id="L385">		nomClassLabel.setFont(new Font(&quot;Tahoma&quot;, Font.PLAIN, 14));</span>
+<span class="nc" id="L386">		nomClassLabel.setBounds(262, 51, 138, 35);</span>
+<span class="nc" id="L387">		godClassFrame.getContentPane().add(nomClassLabel);</span>
+
+<span class="nc" id="L389">		textField_WmcClass = new JFormattedTextField(WMC_class);</span>
+<span class="nc" id="L390">		textField_WmcClass.setBounds(120, 61, 50, 19);</span>
+<span class="nc" id="L391">		godClassFrame.getContentPane().add(textField_WmcClass);</span>
+<span class="nc" id="L392">		textField_WmcClass.setColumns(10);</span>
+<span class="nc" id="L393">		textField_WmcClass.addKeyListener(new KeyAdapter() {</span>
+			@Override
+			public void keyPressed(KeyEvent e) {
+
+<span class="nc bnc" id="L397" title="All 4 branches missed.">				if (e.getKeyChar() &gt;= '0' &amp;&amp; e.getKeyChar() &lt;= '9') {</span>
+<span class="nc" id="L398">					textField_WmcClass.setEditable(true);</span>
+<span class="nc" id="L399">				} else {</span>
+<span class="nc" id="L400">					textField_WmcClass.setEditable(false);</span>
+<span class="nc bnc" id="L401" title="All 2 branches missed.">					if (e.getExtendedKeyCode() == KeyEvent.VK_BACK_SPACE</span>
+<span class="nc bnc" id="L402" title="All 2 branches missed.">							|| e.getExtendedKeyCode() == KeyEvent.VK_DELETE) {</span>
+<span class="nc" id="L403">						textField_WmcClass.setEditable(true);</span>
+					}
+				}
+<span class="nc" id="L406">			}</span>
+
+		});
+<span class="nc" id="L409">		textField_NomClass = new JFormattedTextField(NOM_class);</span>
+<span class="nc" id="L410">		textField_NomClass.setColumns(10);</span>
+<span class="nc" id="L411">		textField_NomClass.setBounds(399, 61, 50, 19);</span>
+<span class="nc" id="L412">		godClassFrame.getContentPane().add(textField_NomClass);</span>
+<span class="nc" id="L413">		textField_NomClass.addKeyListener(new KeyAdapter() {</span>
+			@Override
+			public void keyPressed(KeyEvent e) {
+
+<span class="nc bnc" id="L417" title="All 4 branches missed.">				if (e.getKeyChar() &gt;= '0' &amp;&amp; e.getKeyChar() &lt;= '9') {</span>
+<span class="nc" id="L418">					textField_NomClass.setEditable(true);</span>
+
+<span class="nc" id="L420">				} else {</span>
+<span class="nc" id="L421">					textField_NomClass.setEditable(false);</span>
+<span class="nc bnc" id="L422" title="All 2 branches missed.">					if (e.getExtendedKeyCode() == KeyEvent.VK_BACK_SPACE</span>
+<span class="nc bnc" id="L423" title="All 2 branches missed.">							|| e.getExtendedKeyCode() == KeyEvent.VK_DELETE) {</span>
+<span class="nc" id="L424">						textField_NomClass.setEditable(true);</span>
+					}
+				}
+<span class="nc" id="L427">			}</span>
+
+		});
+<span class="nc" id="L430">		JLabel godClassLabel = new JLabel(&quot;God Class&quot;);</span>
+<span class="nc" id="L431">		godClassLabel.setFont(new Font(&quot;Arial Black&quot;, Font.PLAIN, 16));</span>
+<span class="nc" id="L432">		godClassLabel.setBounds(10, 10, 133, 31);</span>
+<span class="nc" id="L433">		godClassFrame.getContentPane().add(godClassLabel);</span>
+
+<span class="nc" id="L435">		JButton createButton = new JButton(&quot;Create&quot;);</span>
+<span class="nc" id="L436">		createButton.setFont(new Font(&quot;Arial Black&quot;, Font.PLAIN, 12));</span>
+<span class="nc" id="L437">		createButton.setBounds(325, 113, 85, 21);</span>
+<span class="nc" id="L438">		godClassFrame.getContentPane().add(createButton);</span>
+<span class="nc" id="L439">		createButton.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="nc bnc" id="L441" title="All 2 branches missed.">				if (!file.exists()) {</span>
+<span class="nc" id="L442">					JOptionPane.showMessageDialog(null, &quot;Por favor, introduza um projeto.&quot;);</span>
+<span class="nc" id="L443">				} else {</span>
+<span class="nc bnc" id="L444" title="All 4 branches missed.">					if (!textField_WmcClass.getText().equals(&quot;0&quot;) &amp;&amp; !textField_NomClass.getText().equals(&quot;0&quot;)) {</span>
+<span class="nc" id="L445">						WMC_class = Integer.valueOf(textField_WmcClass.getText());</span>
+<span class="nc" id="L446">						NOM_class = Integer.valueOf(textField_NomClass.getText());</span>
+
+<span class="nc" id="L448">						(new CodeSmellsAnalyser(methodID, LOC_method, CYCLO_method, WMC_class, NOM_class, oLogico))</span>
+<span class="nc" id="L449">								.run();</span>
+<span class="nc" id="L450">						godClassFrame.dispose();</span>
+						try {
+<span class="nc bnc" id="L452" title="All 2 branches missed.">							if (isJasml == true) {</span>
+<span class="nc" id="L453">								HashMap&lt;Integer, String[]&gt; metrics = GetMetrics.calculateIndicatores(methodID,</span>
+<span class="nc" id="L454">										LOC_method, CYCLO_method, WMC_class, NOM_class, oLogico);</span>
+<span class="nc" id="L455">								dataToGraphic(metrics);</span>
+							}
+<span class="nc" id="L457">						} catch (IOException e2) {</span>
+							// TODO Auto-generated catch block
+<span class="nc" id="L459">							e2.printStackTrace();</span>
+						}
+						try {
+<span class="nc" id="L462">							saveRules(path, oLogico, textField_WmcClass.getText(), textField_NomClass.getText(),</span>
+<span class="nc" id="L463">									&quot;WMC_class&quot;, &quot;NOM_class&quot;);</span>
+<span class="nc" id="L464">						} catch (IOException e1) {</span>
+							// TODO Auto-generated catch block
+<span class="nc" id="L466">							e1.printStackTrace();</span>
+						}
+<span class="nc" id="L468">						JFrame frame = new JFrame(&quot;&quot;);</span>
+<span class="nc" id="L469">						JOptionPane.showMessageDialog(frame, &quot;ConcluÃ­do&quot;, &quot;CodeQualityAssessor&quot;,</span>
+<span class="nc" id="L470">								JOptionPane.PLAIN_MESSAGE);</span>
+<span class="nc" id="L471">					} else {</span>
+<span class="nc" id="L472">						JFrame frame = new JFrame(&quot;&quot;);</span>
+<span class="nc" id="L473">						JOptionPane.showMessageDialog(frame, &quot;Por favor, introduza valores superiores a 0!&quot;,</span>
+<span class="nc" id="L474">								&quot;CodeQualityAssessor&quot;, JOptionPane.WARNING_MESSAGE);</span>
+
+					}
+				}
+<span class="nc" id="L478">			}</span>
+		});
+<span class="nc" id="L480">		JComboBox&lt;String&gt; list = listRules();</span>
+<span class="nc" id="L481">		godClassFrame.getContentPane().add(list);</span>
+<span class="nc" id="L482">		godClassFrame.setVisible(true);</span>
+<span class="nc" id="L483">	}</span>
+
+	private JComboBox&lt;String&gt; listRules() {
+<span class="nc" id="L486">		DefaultComboBoxModel&lt;String&gt; model = new DefaultComboBoxModel&lt;String&gt;();</span>
+<span class="nc" id="L487">		model.addElement(&quot;AND&quot;);</span>
+<span class="nc" id="L488">		model.addElement(&quot;OR&quot;);</span>
+<span class="nc" id="L489">		JComboBox&lt;String&gt; list = new JComboBox&lt;String&gt;(model);</span>
+<span class="nc" id="L490">		list.setBounds(195, 61, 50, 19);</span>
+<span class="nc" id="L491">		list.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L493">				String selectedItem = (String) list.getSelectedItem();</span>
+<span class="nc" id="L494">			}</span>
+		});
+<span class="nc" id="L496">		return list;</span>
+	}
+
+	public void ReadRules(String path) throws IOException {
+<span class="nc" id="L500">		hist = new JFrame(&quot;Historico&quot;);</span>
+<span class="nc" id="L501">		hist = new JFrame();</span>
+<span class="nc" id="L502">		hist.setBounds(100, 100, 300, 228);</span>
+<span class="nc" id="L503">		hist.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);</span>
+<span class="nc" id="L504">		File rules = new File(path + &quot;/HistoryRules.txt&quot;);</span>
+
+<span class="nc" id="L506">		DefaultListModel&lt;Object&gt; modelList = new DefaultListModel&lt;&gt;();</span>
+<span class="nc bnc" id="L507" title="All 2 branches missed.">		if (rules.exists()) {</span>
+
+<span class="nc" id="L509">			FileReader reader = new FileReader(rules);</span>
+			@SuppressWarnings(&quot;resource&quot;)
+<span class="nc" id="L511">			BufferedReader bufferedReader = new BufferedReader(reader);</span>
+			String line;
+<span class="nc" id="L513">			String text = &quot;&quot;;</span>
+<span class="nc bnc" id="L514" title="All 2 branches missed.">			while ((line = bufferedReader.readLine()) != null) {</span>
+<span class="nc" id="L515">				text = line.replace(&quot;\n&quot;, &quot;&quot;);</span>
+<span class="nc" id="L516">				modelList.addElement(text);</span>
+			}
+
+<span class="nc" id="L519">			JList&lt;Object&gt; listj = new JList&lt;Object&gt;(modelList);</span>
+<span class="nc" id="L520">			listj.setSelectionMode(DefaultListSelectionModel.SINGLE_SELECTION);</span>
+<span class="nc" id="L521">			hist.getContentPane().add(listj, BorderLayout.CENTER);</span>
+
+<span class="nc" id="L523">			JScrollPane scrollPane = new JScrollPane(listj);</span>
+<span class="nc" id="L524">			hist.getContentPane().add(scrollPane, BorderLayout.CENTER);</span>
+
+<span class="nc" id="L526">			JButton visualize = new JButton(&quot;Visualizar&quot;);</span>
+<span class="nc" id="L527">			hist.getContentPane().add(visualize, BorderLayout.SOUTH);</span>
+
+<span class="nc" id="L529">			visualize.addActionListener(new ActionListener() {</span>
+				public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L531">					String selectedValue = (String) listj.getSelectedValue();</span>
+<span class="nc" id="L532">					String selectedValueSplit[] = selectedValue.split(&quot; &quot;);</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">					if (selectedValueSplit[0].equals(&quot;LOC_method&quot;)) {</span>
+<span class="nc" id="L534">						LOC_method = Integer.valueOf(selectedValueSplit[2]);</span>
+<span class="nc" id="L535">						CYCLO_method = Integer.valueOf(selectedValueSplit[6]);</span>
+
+<span class="nc" id="L537">						(new CodeSmellsAnalyser(methodID, LOC_method, CYCLO_method, WMC_class, NOM_class,</span>
+<span class="nc" id="L538">								selectedValueSplit[3])).run();</span>
+
+						try {
+<span class="nc bnc" id="L541" title="All 2 branches missed.">							if (isJasml == true) {</span>
+<span class="nc" id="L542">								HashMap&lt;Integer, String[]&gt; metrics = GetMetrics.calculateIndicatores(methodID,</span>
+<span class="nc" id="L543">										LOC_method, CYCLO_method, WMC_class, NOM_class, selectedValueSplit[3]);</span>
+<span class="nc" id="L544">								dataToGraphic(metrics);</span>
+							}
+<span class="nc" id="L546">						} catch (IOException e1) {</span>
+							// TODO Auto-generated catch block
+<span class="nc" id="L548">							e1.printStackTrace();</span>
+						}
+<span class="nc" id="L550">						hist.dispose();</span>
+<span class="nc" id="L551">					} else {</span>
+<span class="nc" id="L552">						WMC_class = Integer.valueOf(selectedValueSplit[2]);</span>
+<span class="nc" id="L553">						NOM_class = Integer.valueOf(selectedValueSplit[6]);</span>
+
+<span class="nc" id="L555">						(new CodeSmellsAnalyser(methodID, LOC_method, CYCLO_method, WMC_class, NOM_class,</span>
+<span class="nc" id="L556">								selectedValueSplit[3])).run();</span>
+						try {
+<span class="nc bnc" id="L558" title="All 2 branches missed.">							if (isJasml == true) {</span>
+<span class="nc" id="L559">								HashMap&lt;Integer, String[]&gt; metrics = GetMetrics.calculateIndicatores(methodID,</span>
+<span class="nc" id="L560">										LOC_method, CYCLO_method, WMC_class, NOM_class, selectedValueSplit[3]);</span>
+<span class="nc" id="L561">								dataToGraphic(metrics);</span>
+							}
+
+<span class="nc" id="L564">						} catch (IOException e1) {</span>
+							// TODO Auto-generated catch block
+<span class="nc" id="L566">							e1.printStackTrace();</span>
+						}
+<span class="nc" id="L568">						hist.dispose();</span>
+					}
+<span class="nc" id="L570">					JFrame frame = new JFrame(&quot;&quot;);</span>
+<span class="nc" id="L571">					JOptionPane.showMessageDialog(frame, &quot;Concluido&quot;, &quot;CodeQualityAssessor&quot;, JOptionPane.PLAIN_MESSAGE);</span>
+
+<span class="nc" id="L573">				}</span>
+			});
+<span class="nc" id="L575">			hist.setVisible(true);</span>
+<span class="nc" id="L576">		} else {</span>
+<span class="nc" id="L577">			JOptionPane.showMessageDialog(null, &quot;Ainda nao criou nenhuma regra para o projeto importado!&quot;);</span>
+
+		}
+
+<span class="nc" id="L581">	}</span>
+
+	/**
+	 * Initialize the contents of the frame.
+	 * 
+	 * @throws IOException
+	 */
+	public void saveRules(String path, String oLogico, String firstNumber, String secondNumber, String firstMetric,
+			String secondMetric) throws IOException {
+
+<span class="nc" id="L591">		File file = new File(path + &quot;/HistoryRules.txt&quot;);</span>
+<span class="nc bnc" id="L592" title="All 2 branches missed.">		if (!file.exists()) {</span>
+			try {
+<span class="nc" id="L594">				FileWriter myWriter = writeSavedRule(oLogico, firstNumber, secondNumber, firstMetric, secondMetric,</span>
+<span class="nc" id="L595">						file);</span>
+<span class="nc" id="L596">				System.out.println(&quot;Successfully wrote to the file.&quot;);</span>
+<span class="nc" id="L597">			} catch (IOException e) {</span>
+<span class="nc" id="L598">				System.out.println(&quot;An error occurred.&quot;);</span>
+<span class="nc" id="L599">				e.printStackTrace();</span>
+			}
+<span class="nc" id="L601">		} else {</span>
+<span class="nc" id="L602">			FileReader reader = new FileReader(file);</span>
+<span class="nc" id="L603">			BufferedReader bufferedReader = new BufferedReader(reader);</span>
+			String line;
+<span class="nc" id="L605">			String text = &quot;&quot;;</span>
+<span class="nc" id="L606">			String regra = firstMetric + &quot; &gt; &quot; + firstNumber + &quot; &quot; + oLogico + &quot; &quot; + secondMetric + &quot; &gt; &quot;</span>
+<span class="nc" id="L607">					+ secondNumber;</span>
+<span class="nc" id="L608">			boolean regraExiste = false;</span>
+<span class="nc bnc" id="L609" title="All 2 branches missed.">			while ((line = bufferedReader.readLine()) != null) {</span>
+<span class="nc bnc" id="L610" title="All 2 branches missed.">				if (!line.equals(regra)) {</span>
+<span class="nc" id="L611">					text = text + (line) + &quot;\n&quot;;</span>
+<span class="nc" id="L612">				} else {</span>
+<span class="nc" id="L613">					regraExiste = true;</span>
+<span class="nc" id="L614">					System.out.println(&quot;Erro regra ja exite&quot;);</span>
+<span class="nc" id="L615">					break;</span>
+				}
+
+			}
+<span class="nc bnc" id="L619" title="All 2 branches missed.">			if (regraExiste == false) {</span>
+<span class="nc" id="L620">				FileWriter myWriter = new FileWriter(file);</span>
+<span class="nc" id="L621">				text = text + (firstMetric + &quot; &gt; &quot; + firstNumber + &quot; &quot; + oLogico + &quot; &quot; + secondMetric + &quot; &gt; &quot;</span>
+<span class="nc" id="L622">						+ secondNumber);</span>
+<span class="nc" id="L623">				myWriter.write(text);</span>
+<span class="nc" id="L624">				myWriter.close();</span>
+<span class="nc" id="L625">				System.out.println(&quot;Successfully wrote to the file.&quot;);</span>
+			}
+		}
+
+<span class="nc" id="L629">	}</span>
+
+	private FileWriter writeSavedRule(String oLogico, String firstNumber, String secondNumber, String firstMetric,
+			String secondMetric, File file) throws IOException {
+<span class="nc" id="L633">		FileWriter myWriter = new FileWriter(file);</span>
+<span class="nc" id="L634">		myWriter.write(</span>
+<span class="nc" id="L635">				firstMetric + &quot; &gt; &quot; + firstNumber + &quot; &quot; + oLogico + &quot; &quot; + secondMetric + &quot; &gt; &quot; + secondNumber + &quot;\n&quot;);</span>
+<span class="nc" id="L636">		myWriter.close();</span>
+<span class="nc" id="L637">		return myWriter;</span>
+	}
+
+	public void searchDir() {
+
+<span class="nc" id="L642">		chooser = new JFileChooser();</span>
+<span class="nc" id="L643">		chooser.setCurrentDirectory(new java.io.File(&quot;..&quot;));</span>
+<span class="nc" id="L644">		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);</span>
+<span class="nc" id="L645">		int result = chooser.showSaveDialog(this);</span>
+<span class="nc bnc" id="L646" title="All 2 branches missed.">		if (result == JFileChooser.APPROVE_OPTION) {</span>
+			// se acaba em src
+
+<span class="nc" id="L649">			file = chooser.getSelectedFile();</span>
+<span class="nc" id="L650">			path = chooser.getSelectedFile().toString();</span>
+<span class="nc" id="L651">			textField.setText(path);</span>
+
+<span class="nc" id="L653">		} else {</span>
+<span class="nc bnc" id="L654" title="All 2 branches missed.">			if (result == JFileChooser.CANCEL_OPTION) {</span>
+<span class="nc" id="L655">				System.out.println(&quot;Cancel was selected&quot;);</span>
+
+			}
+		}
+
+<span class="nc" id="L660">	}</span>
+
+	private void initialize() throws IOException {
+
+<span class="nc" id="L664">		frameProduct.createFrame(this);</span>
+<span class="nc" id="L665">		getFrame().getContentPane().setForeground(SystemColor.controlHighlight);</span>
+<span class="nc" id="L666">		getFrame().getContentPane().setLayout(null);</span>
+
+<span class="nc" id="L668">		ImageIcon iconHome = createImageIcon(&quot;homeicon.gif&quot;);</span>
+<span class="nc" id="L669">		ImageIcon iconExcel = createImageIcon(&quot;Excel-icon.png&quot;);</span>
+<span class="nc" id="L670">		ImageIcon iconMetric = createImageIcon(&quot;ruler.gif&quot;);</span>
+<span class="nc" id="L671">		ImageIcon iconGraph = createImageIcon(&quot;graphIcon.gif&quot;);</span>
+
+<span class="nc" id="L673">		JTabbedPane importPane = new JTabbedPane(JTabbedPane.TOP);</span>
+<span class="nc" id="L674">		importPane.setForeground(SystemColor.inactiveCaptionText);</span>
+<span class="nc" id="L675">		importPane.setBounds(6, 6, 1126, 469);</span>
+<span class="nc" id="L676">		getFrame().getContentPane().add(importPane);</span>
+
+<span class="nc" id="L678">		importProject = getTabImportProject();</span>
+<span class="nc" id="L679">		importPane.addTab(&quot;Importar Projeto&quot;, iconHome, importProject, null);</span>
+<span class="nc" id="L680">		JPanel excelPanel = new JPanel();</span>
+<span class="nc" id="L681">		importPane.addTab(&quot;Excel&quot;, iconExcel, excelPanel, null);</span>
+<span class="nc" id="L682">		excelPanel.setLayout(null);</span>
+
+<span class="nc" id="L684">		JSeparator separator = new JSeparator();</span>
+<span class="nc" id="L685">		separator.setBounds(950, 6, 12, 411);</span>
+<span class="nc" id="L686">		separator.setOrientation(SwingConstants.VERTICAL);</span>
+<span class="nc" id="L687">		separator.setForeground(Color.GRAY);</span>
+<span class="nc" id="L688">		excelPanel.add(separator);</span>
+
+<span class="nc" id="L690">		JButton butaoLongRegra = new JButton(&quot;Long Method&quot;);</span>
+<span class="nc" id="L691">		butaoLongRegra.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L693">				creatLong();</span>
+
+<span class="nc" id="L695">			}</span>
+		});
+<span class="nc" id="L697">		butaoLongRegra.setBounds(961, 6, 131, 42);</span>
+<span class="nc" id="L698">		excelPanel.add(butaoLongRegra);</span>
+
+<span class="nc" id="L700">		JButton butaoGodRegra = new JButton(&quot;God Class&quot;);</span>
+<span class="nc" id="L701">		butaoGodRegra.setBounds(961, 60, 131, 42);</span>
+<span class="nc" id="L702">		excelPanel.add(butaoGodRegra);</span>
+<span class="nc" id="L703">		butaoGodRegra.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+<span class="nc" id="L705">				creatGod();</span>
+<span class="nc" id="L706">			}</span>
+		});
+
+<span class="nc" id="L709">		JButton butaoHRegra = new JButton(&quot;Historico Regras&quot;);</span>
+<span class="nc" id="L710">		butaoHRegra.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+				try {
+<span class="nc" id="L713">					ReadRules(path);</span>
+<span class="nc" id="L714">				} catch (IOException e1) {</span>
+					// TODO Auto-generated catch block
+<span class="nc" id="L716">					e1.printStackTrace();</span>
+				}
+<span class="nc" id="L718">			}</span>
+		});
+<span class="nc" id="L720">		butaoHRegra.setBounds(961, 114, 131, 42);</span>
+<span class="nc" id="L721">		excelPanel.add(butaoHRegra);</span>
+
+<span class="nc" id="L723">		excelGui.setTabelaExcel(new JTable(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS,</span>
+<span class="nc" id="L724">				ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED));</span>
+
+<span class="nc" id="L726">		excelGui.setScrollPane(new JScrollPane(excelGui.getTabelaExcel()));</span>
+<span class="nc" id="L727">		excelGui.getScrollPane().setBounds(10, 11, 928, 388);</span>
+<span class="nc" id="L728">		excelPanel.add(excelGui.getScrollPane());</span>
+
+<span class="nc" id="L730">		excelGui.getTabelaExcel()</span>
+<span class="nc" id="L731">				.setModel(new DefaultTableModel(</span>
+<span class="nc" id="L732">						new Object[][] { { &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot;, &quot;-&quot; }, },</span>
+<span class="nc" id="L733">						new String[] { &quot;MethodID&quot;, &quot;package&quot;, &quot;class&quot;, &quot;method&quot;, &quot;NOM_class&quot;, &quot;LOC_class&quot;, &quot;WMC_class&quot;,</span>
+<span class="nc" id="L734">								&quot;is_God_class&quot;, &quot;LOC_method&quot;, &quot;CYCLO_method&quot;, &quot;is_Long_Method&quot; }));</span>
+
+<span class="nc" id="L736">		excelGui.getTabelaExcel().getColumnModel().getColumn(0).setMinWidth(70);</span>
+<span class="nc" id="L737">		excelGui.getTabelaExcel().getColumnModel().getColumn(1).setMinWidth(70);</span>
+<span class="nc" id="L738">		excelGui.getTabelaExcel().getColumnModel().getColumn(2).setMinWidth(20);</span>
+<span class="nc" id="L739">		excelGui.getTabelaExcel().getColumnModel().getColumn(3).setMinWidth(70);</span>
+<span class="nc" id="L740">		excelGui.getTabelaExcel().getColumnModel().getColumn(4).setMinWidth(70);</span>
+<span class="nc" id="L741">		excelGui.getTabelaExcel().getColumnModel().getColumn(5).setMinWidth(100);</span>
+<span class="nc" id="L742">		excelGui.getTabelaExcel().getColumnModel().getColumn(6).setMinWidth(100);</span>
+<span class="nc" id="L743">		excelGui.getTabelaExcel().getColumnModel().getColumn(7).setMinWidth(100);</span>
+<span class="nc" id="L744">		excelGui.getTabelaExcel().getColumnModel().getColumn(8).setMinWidth(100);</span>
+<span class="nc" id="L745">		excelGui.getTabelaExcel().getColumnModel().getColumn(9).setMinWidth(100);</span>
+<span class="nc" id="L746">		excelGui.getTabelaExcel().getColumnModel().getColumn(10).setMinWidth(100);</span>
+
+<span class="nc" id="L748">		excelGui.getTabelaExcel().setAutoResizeMode(JTable.AUTO_RESIZE_OFF);</span>
+<span class="nc" id="L749">		excelGui.getTabelaExcel().getTableHeader().setReorderingAllowed(false);</span>
+
+<span class="nc" id="L751">		excelGui.getScrollPane().setViewportView(excelGui.getTabelaExcel());</span>
+
+<span class="nc" id="L753">		JPanel featuresPanel = new JPanel();</span>
+<span class="nc" id="L754">		importPane.addTab(&quot;Caracteristicas Gerais&quot;, iconMetric, featuresPanel, null);</span>
+<span class="nc" id="L755">		featuresPanel.setLayout(null);</span>
+
+<span class="nc" id="L757">		Npackages = new JLabel(&quot;Numero total de packages: &quot;);</span>
+<span class="nc" id="L758">		Npackages.setBounds(29, 71, 231, 21);</span>
+<span class="nc" id="L759">		featuresPanel.add(Npackages);</span>
+
+<span class="nc" id="L761">		Nclasses = new JLabel(&quot;Numero total de classes:&quot;);</span>
+<span class="nc" id="L762">		Nclasses.setBounds(29, 119, 231, 21);</span>
+<span class="nc" id="L763">		featuresPanel.add(Nclasses);</span>
+
+<span class="nc" id="L765">		Nmethods = new JLabel(&quot;Numero total de metodos:&quot;);</span>
+<span class="nc" id="L766">		Nmethods.setBounds(29, 174, 231, 21);</span>
+<span class="nc" id="L767">		featuresPanel.add(Nmethods);</span>
+
+<span class="nc" id="L769">		Nlinhas = new JLabel(&quot;Numero de linhas de codigo do projeto:&quot;);</span>
+<span class="nc" id="L770">		Nlinhas.setBounds(29, 228, 436, 21);</span>
+<span class="nc" id="L771">		featuresPanel.add(Nlinhas);</span>
+
+<span class="nc" id="L773">		JLabel labelCaract = getLabelFeatures();</span>
+<span class="nc" id="L774">		featuresPanel.add(labelCaract);</span>
+
+<span class="nc" id="L776">		JLabel metricsImage = new JLabel(&quot;&quot;);</span>
+<span class="nc" id="L777">		metricsImage.setIcon(new ImageIcon(Gui.class.getResource(&quot;metrics.png&quot;)));</span>
+<span class="nc" id="L778">		metricsImage.setBounds(29, 261, 345, 156);</span>
+<span class="nc" id="L779">		featuresPanel.add(metricsImage);</span>
+
+<span class="nc" id="L781">		graph = new JPanel();</span>
+<span class="nc" id="L782">		importPane.addTab(&quot;Graficos&quot;, iconGraph, graph, null);</span>
+<span class="nc" id="L783">		graph.setLayout(null);</span>
+
+<span class="nc" id="L785">		JLabel labelR = getLabelRodape();</span>
+<span class="nc" id="L786">		getFrame().getContentPane().add(labelR);</span>
+<span class="nc" id="L787">	}</span>
+
+	private JPanel getTabImportProject() {
+<span class="nc" id="L790">		JPanel importPanel = new JPanel();</span>
+<span class="nc" id="L791">		importPanel.setLayout(null);</span>
+<span class="nc" id="L792">		JButton importButton = new JButton(&quot;Importar Projeto&quot;);</span>
+<span class="nc" id="L793">		importButton.setBounds(508, 88, 146, 38);</span>
+<span class="nc" id="L794">		importPanel.add(importButton);</span>
+
+<span class="nc" id="L796">		importButton.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+
+<span class="nc" id="L799">				file = chooser.getSelectedFile();</span>
+
+<span class="nc" id="L801">				methodID = GetMetrics.extractMetrics(file, 50, 10, 50, 10, &quot;AND&quot;);</span>
+<span class="nc" id="L802">				(new OpenDir(methodID, file, Npackages, Nclasses, Nmethods, Nlinhas, textField, guiFrame)).start();</span>
+<span class="nc" id="L803">				(new JavaToExcel(file.getPath())).start();</span>
+<span class="nc" id="L804">			}</span>
+		});
+
+<span class="nc" id="L807">		JLabel insertPathLabel = new JLabel(&quot;Por favor insira o path do projeto, que pretenda analisar:&quot;);</span>
+<span class="nc" id="L808">		insertPathLabel.setFont(new Font(&quot;Lucida Grande&quot;, Font.PLAIN, 15));</span>
+<span class="nc" id="L809">		insertPathLabel.setBounds(26, 25, 463, 26);</span>
+<span class="nc" id="L810">		importPanel.add(insertPathLabel);</span>
+<span class="nc" id="L811">		textField = new JTextField();</span>
+<span class="nc" id="L812">		textField.setBounds(26, 63, 438, 44);</span>
+<span class="nc" id="L813">		importPanel.add(textField);</span>
+<span class="nc" id="L814">		textField.setColumns(10);</span>
+<span class="nc" id="L815">		JSeparator separator = new JSeparator();</span>
+<span class="nc" id="L816">		separator.setForeground(SystemColor.inactiveCaptionText);</span>
+<span class="nc" id="L817">		separator.setBounds(6, 128, 675, 26);</span>
+<span class="nc" id="L818">		importPanel.add(separator);</span>
+<span class="nc" id="L819">		JButton browse = new JButton(&quot;Selecionar Projeto&quot;);</span>
+<span class="nc" id="L820">		browse.addActionListener(new ActionListener() {</span>
+			public void actionPerformed(ActionEvent e) {
+
+<span class="nc" id="L823">				searchDir();</span>
+<span class="nc" id="L824">			}</span>
+		});
+<span class="nc" id="L826">		browse.setBounds(508, 38, 146, 38);</span>
+<span class="nc" id="L827">		importPanel.add(browse);</span>
+
+<span class="nc" id="L829">		JLabel appLabel = new JLabel(&quot;Aplicaçao desenvolvida por:&quot;);</span>
+<span class="nc" id="L830">		appLabel.setFont(new Font(&quot;Lucida Grande&quot;, Font.PLAIN, 16));</span>
+<span class="nc" id="L831">		appLabel.setBounds(735, 25, 268, 26);</span>
+<span class="nc" id="L832">		importPanel.add(appLabel);</span>
+
+<span class="nc" id="L834">		JLabel beatrizLabel = new JLabel(&quot;- Beatriz Lima&quot;);</span>
+<span class="nc" id="L835">		beatrizLabel.setBounds(735, 63, 146, 16);</span>
+<span class="nc" id="L836">		importPanel.add(beatrizLabel);</span>
+
+<span class="nc" id="L838">		JLabel inesRLabel = new JLabel(&quot;- Ines Rocha&quot;);</span>
+<span class="nc" id="L839">		inesRLabel.setBounds(735, 88, 146, 16);</span>
+<span class="nc" id="L840">		importPanel.add(inesRLabel);</span>
+
+<span class="nc" id="L842">		JLabel mariaLabel = new JLabel(&quot;- Maria Ines Monteiro&quot;);</span>
+<span class="nc" id="L843">		mariaLabel.setBounds(735, 116, 146, 16);</span>
+<span class="nc" id="L844">		importPanel.add(mariaLabel);</span>
+
+<span class="nc" id="L846">		JLabel mauroLabel = new JLabel(&quot;- Mauro Afonso&quot;);</span>
+<span class="nc" id="L847">		mauroLabel.setBounds(735, 144, 146, 16);</span>
+<span class="nc" id="L848">		importPanel.add(mauroLabel);</span>
+
+<span class="nc" id="L850">		JLabel sofiaLabel = new JLabel(&quot;- Sofia Correia&quot;);</span>
+<span class="nc" id="L851">		sofiaLabel.setBounds(735, 172, 146, 16);</span>
+<span class="nc" id="L852">		importPanel.add(sofiaLabel);</span>
+
+<span class="nc" id="L854">		JLabel tiagoLabel = new JLabel(&quot;- Tiago Bombas&quot;);</span>
+<span class="nc" id="L855">		tiagoLabel.setBounds(735, 200, 146, 16);</span>
+<span class="nc" id="L856">		importPanel.add(tiagoLabel);</span>
+
+<span class="nc" id="L858">		JSeparator importFrameSeparator = new JSeparator();</span>
+<span class="nc" id="L859">		importFrameSeparator.setForeground(SystemColor.inactiveCaptionText);</span>
+<span class="nc" id="L860">		importFrameSeparator.setOrientation(SwingConstants.VERTICAL);</span>
+<span class="nc" id="L861">		importFrameSeparator.setBounds(693, 6, 18, 411);</span>
+<span class="nc" id="L862">		importPanel.add(importFrameSeparator);</span>
+<span class="nc" id="L863">		return importPanel;</span>
+	}
+
+	private JLabel getLabelRodape() {
+<span class="nc" id="L867">		JLabel projectLabel = new JLabel(&quot;Projeto de Engenharia de Software 2020/2021 &quot;);</span>
+<span class="nc" id="L868">		projectLabel.setForeground(new Color(128, 128, 128));</span>
+<span class="nc" id="L869">		projectLabel.setBounds(444, 468, 292, 24);</span>
+<span class="nc" id="L870">		return projectLabel;</span>
+	}
+
+	private JLabel getLabelFeatures() {
+<span class="nc" id="L874">		JLabel featuresLabel = new JLabel(&quot;Caracteristicas gerais do projeto:&quot;);</span>
+<span class="nc" id="L875">		featuresLabel.setFont(new Font(&quot;Lucida Grande&quot;, Font.PLAIN, 16));</span>
+<span class="nc" id="L876">		featuresLabel.setBounds(18, 16, 306, 30);</span>
+<span class="nc" id="L877">		return featuresLabel;</span>
+	}
+
+	protected static ImageIcon createImageIcon(String path) {
+<span class="nc" id="L881">		java.net.URL imgURL = Gui.class.getResource(path);</span>
+<span class="nc bnc" id="L882" title="All 2 branches missed.">		if (imgURL != null) {</span>
+<span class="nc" id="L883">			return new ImageIcon(imgURL);</span>
+		} else {
+<span class="nc" id="L885">			System.err.println(&quot;Couldn't find file: &quot; + path);</span>
+<span class="nc" id="L886">			return null;</span>
+		}
+	}
+
+	public JFrame getFrame() {
+<span class="nc" id="L891">		return frameProduct.getFrame();</span>
+	}
+
+	public void setFrame(JFrame frame) {
+<span class="nc" id="L895">		frameProduct.setFrame(frame);</span>
+<span class="nc" id="L896">	}</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>GetMetricasTest (1) (07/05/2021 15:18:52)</div></body></html>

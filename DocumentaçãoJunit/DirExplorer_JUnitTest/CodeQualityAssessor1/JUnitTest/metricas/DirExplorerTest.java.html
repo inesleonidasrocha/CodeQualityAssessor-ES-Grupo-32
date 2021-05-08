@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>DirExplorerTest.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">DirExplorerTest (1) (07/05/2021 15:34:30)</a> &gt; <a href="../../index.html" class="el_group">CodeQualityAssessor1</a> &gt; <a href="../index.html" class="el_bundle">JUnitTest</a> &gt; <a href="index.source.html" class="el_package">metricas</a> &gt; <span class="el_source">DirExplorerTest.java</span></div><h1>DirExplorerTest.java</h1><pre class="source lang-java linenums">package metricas;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.File;
+
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import metrics.DirExplorer;
+
+<span class="fc" id="L15">class DirExplorerTest {</span>
+<span class="fc" id="L16">	private static File file = new File(&quot;src&quot;);</span>
+	private static final int numberOfJavaFiles = 11;
+<span class="fc" id="L18">	private static int countNumberOfFiles = 0;</span>
+<span class="fc" id="L19">	private static boolean dirEmpty;</span>
+
+	@BeforeAll
+	static void setUpBeforeClass() throws Exception {
+<span class="fc" id="L23">		new DirExplorer((level, path, file) -&gt; path.endsWith(&quot;.java&quot;), (level, path, file) -&gt; {</span>
+<span class="fc" id="L24">			countNumberOfFiles++;</span>
+<span class="fc" id="L25">		}).explore(file);</span>
+
+<span class="fc" id="L27">		DirExplorer a = new DirExplorer((level, path, file) -&gt; path.endsWith(&quot;.java&quot;), (level, path, file) -&gt; {</span>
+<span class="nc" id="L28">		});</span>
+<span class="fc" id="L29">		a.isDirEmpty(0, &quot;&quot;, file);</span>
+<span class="fc" id="L30">		dirEmpty = a.isDirEmpty(0, &quot;&quot;, file);</span>
+
+<span class="fc" id="L32">	}</span>
+
+	@AfterAll
+	static void tearDownAfterClass() throws Exception {
+<span class="fc" id="L36">	}</span>
+
+	@BeforeEach
+	void setUp() throws Exception {
+<span class="fc" id="L40">	}</span>
+
+	@AfterEach
+	void tearDown() throws Exception {
+<span class="fc" id="L44">	}</span>
+
+	@Test
+	void testNumberFilesInSrc() {
+<span class="fc" id="L48">		assertEquals(numberOfJavaFiles,countNumberOfFiles);</span>
+<span class="fc" id="L49">	}</span>
+
+	@Test
+	void testIsDirEmpty() {
+<span class="fc" id="L53">		assertEquals(dirEmpty, true);</span>
+<span class="fc" id="L54">	}</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>DirExplorerTest (1) (07/05/2021 15:34:30)</div></body></html>

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../../../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../../../jacoco-resources/report.gif" type="image/gif"/><title>ExcelReader.java</title><link rel="stylesheet" href="../../../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../../../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../../../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../../../index.html" class="el_report">JavaToExcelTest (1) (07/05/2021 15:43:36)</a> &gt; <a href="../../index.html" class="el_group">CodeQualityAssessor1</a> &gt; <a href="../index.html" class="el_bundle">src</a> &gt; <a href="index.source.html" class="el_package">gui</a> &gt; <span class="el_source">ExcelReader.java</span></div><h1>ExcelReader.java</h1><pre class="source lang-java linenums">package gui;
+
+import java.io.File;
+//reading value of a particular cell  
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashMap;
+import metrics.GetMetrics;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import codeSmells.GetCodeSmellsExcel;
+
+public class ExcelReader {
+
+<span class="nc" id="L21">	private GetCodeSmellsExcel getCodeSmellsExcel = new GetCodeSmellsExcel();</span>
+	public final static int CLASSROWNUMBER = 2;
+	public final static int METHODROWNUMBER = 3;
+	public final static int GODROWNUMBER = 7;
+	public final static int LONGROWNUMBER = 10;
+	public final static int FILELENGHT = 248;
+	public static HashMap&lt;Integer, String[]&gt; codeSmellsProf;
+	private static HashMap&lt;Integer, String[]&gt; ourCodeSmells;
+	private static HashMap&lt;Integer, String[]&gt; codeSmellsMerged;
+	public static String[] colunas;
+<span class="nc" id="L31">	private static int VPGod = 0;</span>
+<span class="nc" id="L32">	private static int VNGod = 0;</span>
+<span class="nc" id="L33">	private static int FPGod = 0;</span>
+<span class="nc" id="L34">	private static int FNGod = 0;</span>
+<span class="nc" id="L35">	private static int VPLong = 0;</span>
+<span class="nc" id="L36">	private static int VNLong = 0;</span>
+<span class="nc" id="L37">	private static int FPLong = 0;</span>
+<span class="nc" id="L38">	private static int FNLong = 0;</span>
+
+<span class="nc" id="L40">	public ExcelReader(HashMap&lt;Integer, String[]&gt; ourCodeSmells) {</span>
+<span class="nc" id="L41">		this.ourCodeSmells = ourCodeSmells;</span>
+<span class="nc" id="L42">		this.codeSmellsProf = getCodeSmellsExcel.getProfCodeSmells();</span>
+<span class="nc" id="L43">	}</span>
+
+	public void getCodeSmell() throws IOException {
+<span class="nc" id="L46">		codeSmellsMerged = new HashMap&lt;Integer, String[]&gt;();</span>
+<span class="nc" id="L47">		this.mergeHash();</span>
+<span class="nc" id="L48">		this.getCodeQuality(codeSmellsMerged);</span>
+<span class="nc" id="L49">	}</span>
+
+	public void mergeHash() {
+<span class="nc bnc" id="L52" title="All 2 branches missed.">		for (int i = 1; i &lt;= ourCodeSmells.size(); i++) {</span>
+<span class="nc" id="L53">			String[] metricsData = new String[8];</span>
+<span class="nc" id="L54">			metricsData = ourCodeSmells.get(i);</span>
+
+<span class="nc bnc" id="L56" title="All 2 branches missed.">			for (int j = 1; j &lt; FILELENGHT; j++) {</span>
+<span class="nc" id="L57">				String[] codeProf = new String[4];</span>
+<span class="nc" id="L58">				codeProf = codeSmellsProf.get(j);</span>
+
+<span class="nc" id="L60">				String[] getCodeData = new String[4];</span>
+
+<span class="nc bnc" id="L62" title="All 4 branches missed.">				if (metricsData[0].equals(codeProf[2]) &amp;&amp; metricsData[1].equals(codeProf[3])) {</span>
+
+<span class="nc" id="L64">					getCodeData[0] = codeProf[0];// GodRow given</span>
+<span class="nc" id="L65">					getCodeData[1] = codeProf[1];// LongRow given</span>
+<span class="nc" id="L66">					getCodeData[2] = metricsData[9];// GodRow ours</span>
+<span class="nc" id="L67">					getCodeData[3] = metricsData[8];// longRow ours</span>
+
+<span class="nc" id="L69">					codeSmellsMerged.put(codeSmellsMerged.size() + 1, getCodeData);</span>
+				}
+
+			}
+		}
+<span class="nc" id="L74">	}</span>
+
+	public int indicatorToGui(String value) {
+<span class="nc" id="L77">		int count = 0;</span>
+<span class="nc bnc" id="L78" title="All 2 branches missed.">		if (value.equals(&quot;VPGod&quot;)) {</span>
+<span class="nc" id="L79">			count = VPGod;</span>
+<span class="nc" id="L80">			VPGod = 0;</span>
+		}
+<span class="nc bnc" id="L82" title="All 2 branches missed.">		if (value.equals(&quot;VNGod&quot;)) {</span>
+<span class="nc" id="L83">			count = VNGod;</span>
+<span class="nc" id="L84">			VNGod = 0;</span>
+		}
+<span class="nc bnc" id="L86" title="All 2 branches missed.">		if (value.equals(&quot;FPGod&quot;)) {</span>
+<span class="nc" id="L87">			count = FPGod;</span>
+<span class="nc" id="L88">			FPGod = 0;</span>
+		}
+<span class="nc bnc" id="L90" title="All 2 branches missed.">		if (value.equals(&quot;FNGod&quot;)) {</span>
+<span class="nc" id="L91">			count = FNGod;</span>
+<span class="nc" id="L92">			FNGod = 0;</span>
+		}
+<span class="nc bnc" id="L94" title="All 2 branches missed.">		if (value.equals(&quot;VPLong&quot;)) {</span>
+<span class="nc" id="L95">			count = VPLong;</span>
+<span class="nc" id="L96">			VPLong = 0;</span>
+		}
+<span class="nc bnc" id="L98" title="All 2 branches missed.">		if (value.equals(&quot;VNLong&quot;)) {</span>
+<span class="nc" id="L99">			count = VNLong;</span>
+<span class="nc" id="L100">			VNLong = 0;</span>
+		}
+<span class="nc bnc" id="L102" title="All 2 branches missed.">		if (value.equals(&quot;FPLong&quot;)) {</span>
+<span class="nc" id="L103">			count = FPLong;</span>
+<span class="nc" id="L104">			FPLong = 0;</span>
+		}
+<span class="nc bnc" id="L106" title="All 2 branches missed.">		if (value.equals(&quot;FNLong&quot;)) {</span>
+<span class="nc" id="L107">			count = FNLong;</span>
+<span class="nc" id="L108">			FNLong = 0;</span>
+		}
+
+<span class="nc" id="L111">		return count;</span>
+	}
+
+	public void getCodeQuality(HashMap&lt;Integer, String[]&gt; methodId) {
+
+<span class="nc bnc" id="L116" title="All 2 branches missed.">		for (int i = 1; i &lt; methodId.size(); i++) {</span>
+<span class="nc" id="L117">			String[] codeMerged = new String[8];</span>
+<span class="nc" id="L118">			codeMerged = codeSmellsMerged.get(i);</span>
+
+			// buscar indicadores para o is_Long_method
+<span class="nc" id="L121">			getIndicadoresLong(codeMerged[1], codeMerged[3]);</span>
+
+			// buscar indicadores para o is_god_class
+<span class="nc" id="L124">			getIndicadoresGod(codeMerged[0], codeMerged[2]);</span>
+
+		}
+
+<span class="nc" id="L128">	}</span>
+
+	private void getIndicadoresLong(String givenLongRow, String ourLongRow) {
+<span class="nc bnc" id="L131" title="All 4 branches missed.">		if (givenLongRow.equalsIgnoreCase(&quot;TRUE&quot;) &amp;&amp; ourLongRow.equalsIgnoreCase(&quot;TRUE&quot;))</span>
+<span class="nc" id="L132">			VPLong++;</span>
+
+<span class="nc bnc" id="L134" title="All 4 branches missed.">		if (givenLongRow.equalsIgnoreCase(&quot;TRUE&quot;) &amp;&amp; ourLongRow.equalsIgnoreCase(&quot;FALSE&quot;))</span>
+<span class="nc" id="L135">			FPLong++;</span>
+
+<span class="nc bnc" id="L137" title="All 4 branches missed.">		if (givenLongRow.equalsIgnoreCase(&quot;FALSE&quot;) &amp;&amp; ourLongRow.equalsIgnoreCase(&quot;TRUE&quot;))</span>
+<span class="nc" id="L138">			FNLong++;</span>
+
+<span class="nc bnc" id="L140" title="All 4 branches missed.">		if (givenLongRow.equalsIgnoreCase(&quot;FALSE&quot;) &amp;&amp; ourLongRow.equalsIgnoreCase(&quot;FALSE&quot;))</span>
+<span class="nc" id="L141">			VNLong++;</span>
+
+<span class="nc" id="L143">	}</span>
+
+	public void getIndicadoresGod(String givenGodRow, String ourGodRow) {
+<span class="nc bnc" id="L146" title="All 4 branches missed.">		if (givenGodRow.equalsIgnoreCase(&quot;TRUE&quot;) &amp;&amp; ourGodRow.equalsIgnoreCase(&quot;TRUE&quot;))</span>
+<span class="nc" id="L147">			VPGod++;</span>
+
+<span class="nc bnc" id="L149" title="All 4 branches missed.">		if (givenGodRow.equalsIgnoreCase(&quot;TRUE&quot;) &amp;&amp; ourGodRow.equalsIgnoreCase(&quot;FALSE&quot;))</span>
+<span class="nc" id="L150">			FPGod++;</span>
+
+<span class="nc bnc" id="L152" title="All 4 branches missed.">		if (givenGodRow.equalsIgnoreCase(&quot;FALSE&quot;) &amp;&amp; ourGodRow.equalsIgnoreCase(&quot;TRUE&quot;))</span>
+<span class="nc" id="L153">			FNGod++;</span>
+
+<span class="nc bnc" id="L155" title="All 4 branches missed.">		if (givenGodRow.equalsIgnoreCase(&quot;FALSE&quot;) &amp;&amp; ourGodRow.equalsIgnoreCase(&quot;FALSE&quot;))</span>
+<span class="nc" id="L156">			VNGod++;</span>
+
+<span class="nc" id="L158">	}</span>
+
+	// method defined for reading a cell
+	public String ReadCellData(int vRow, int vColumn) {
+
+<span class="nc" id="L163">		return getCodeSmellsExcel.ReadCellData(vRow, vColumn);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.6.202009150832</span>JavaToExcelTest (1) (07/05/2021 15:43:36)</div></body></html>
