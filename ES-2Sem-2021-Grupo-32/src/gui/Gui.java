@@ -140,35 +140,35 @@ public class Gui extends javax.swing.JFrame {
 			longMethod.setBounds(766, 6, 148, 16);
 			graph.add(longMethod);
 			GVPositive = new JLabel("Numero total de Verdadeiros Positivos: " + VPGod);
-			GVPositive.setBounds(18, 61, 274, 21);
+			GVPositive.setBounds(18, 61, 300, 21);
 			graph.add(GVPositive);
 
 			GVNegative = new JLabel("Numero total de Verdadeiros Negativos: " + VNGod);
-			GVNegative.setBounds(18, 83, 274, 21);
+			GVNegative.setBounds(18, 83, 300, 21);
 			graph.add(GVNegative);
 
 			GFPositive = new JLabel("Numero total de Falsos Positivos: " + FPGod);
-			GFPositive.setBounds(18, 106, 274, 21);
+			GFPositive.setBounds(18, 106, 300, 21);
 			graph.add(GFPositive);
 
 			GFNegative = new JLabel("Numero total de Falsos Negativos: " + FNGod);
-			GFNegative.setBounds(18, 128, 274, 21);
+			GFNegative.setBounds(18, 128, 300, 21);
 			graph.add(GFNegative);
 
 			LVPositive = new JLabel("Numero total de Verdadeiros Positivos: " + VPLong);
-			LVPositive.setBounds(546, 63, 274, 21);
+			LVPositive.setBounds(546, 63, 300, 21);
 			graph.add(LVPositive);
 
 			LVNegative = new JLabel("Numero total de Verdadeiros Negativos: " + VNLong);
-			LVNegative.setBounds(546, 85, 274, 21);
+			LVNegative.setBounds(546, 85, 300, 21);
 			graph.add(LVNegative);
 
 			LFPositive = new JLabel("Numero total de Falsos Positivos: " + FPLong);
-			LFPositive.setBounds(546, 108, 274, 21);
+			LFPositive.setBounds(546, 108, 300, 21);
 			graph.add(LFPositive);
 
 			LFNegative = new JLabel("Numero total de Falsos Negativos: " + FNLong);
-			LFNegative.setBounds(546, 130, 274, 21);
+			LFNegative.setBounds(546, 130, 300, 21);
 			graph.add(LFNegative);
 
 			createGraph();
@@ -765,22 +765,22 @@ public class Gui extends javax.swing.JFrame {
 
 		Npackages = new JLabel("Numero total de packages: ");
 		Npackages.setFont(new Font("Dialog", Font.PLAIN, 14));
-		Npackages.setBounds(422, 124, 251, 21);
+		Npackages.setBounds(422, 172, 436, 21);
 		featuresPanel.add(Npackages);
 
 		Nclasses = new JLabel("Numero total de classes:");
 		Nclasses.setFont(new Font("Dialog", Font.PLAIN, 14));
-		Nclasses.setBounds(422, 172, 251, 21);
+		Nclasses.setBounds(422, 172, 436, 21);
 		featuresPanel.add(Nclasses);
 
 		Nmethods = new JLabel("Numero total de metodos:");
 		Nmethods.setFont(new Font("Dialog", Font.PLAIN, 14));
-		Nmethods.setBounds(422, 227, 251, 21);
+		Nmethods.setBounds(422, 227, 436, 21);
 		featuresPanel.add(Nmethods);
 
 		Nlinhas = new JLabel("Numero de linhas de codigo do projeto:");
 		Nlinhas.setFont(new Font("Dialog", Font.PLAIN, 14));
-		Nlinhas.setBounds(422, 281, 300, 21);
+		Nlinhas.setBounds(422, 281, 436, 21);
 		featuresPanel.add(Nlinhas);
 
 		JLabel labelCaract = getLabelFeatures();
