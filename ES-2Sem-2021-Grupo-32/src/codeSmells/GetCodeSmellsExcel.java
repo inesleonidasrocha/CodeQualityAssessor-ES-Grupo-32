@@ -24,7 +24,7 @@ public class GetCodeSmellsExcel {
 		String value = null;
 		Workbook workBook = null;
 		try {
-			file = new FileInputStream("src/Code_Smells.xlsx");
+			file = new FileInputStream("Code_Smells.xlsx");
 			workBook = new XSSFWorkbook(file);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
