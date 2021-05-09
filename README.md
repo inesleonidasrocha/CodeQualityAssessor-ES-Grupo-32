@@ -26,7 +26,7 @@ Em baixo, encontra-se o layout da nossa aplicação. O utilizador pode importar 
 - as características gerais do projeto,
 - e caso seja aplicável, os gráficos relativos à deteção dos Code Smells.  
 
-![import](https://user-images.githubusercontent.com/78743981/117577446-b8d48e00-b0e1-11eb-8662-58e27b50997e.jpeg)
+![importf](https://user-images.githubusercontent.com/78743981/117578749-becd6d80-b0e7-11eb-9ac7-5f86901fabf7.jpeg)
 
 ![excel ](https://user-images.githubusercontent.com/78743981/117541063-07aef480-b00a-11eb-9400-ad432fcba280.jpeg)
 
