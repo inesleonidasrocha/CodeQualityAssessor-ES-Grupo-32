@@ -17,7 +17,7 @@ Para a deteção de code smells é necessário extrair um conjunto de métricas 
 -	complexidade ciclomática da classe [WMC_class].  
 
 ### Algumas considerações: ###
-Todas as funcionalidades foram devidamente implementadas à exceção do ficheiro .jar.  
+Todas as funcionalidades foram devidamente implementadas.  
 Os gráficos são apenas visíveis para o projeto jasml.  
 Conforme o tamanho do projeto a importação do mesmo pode levar mais ou menos tempo.   
 
