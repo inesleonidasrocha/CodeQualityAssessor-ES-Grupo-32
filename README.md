@@ -8,7 +8,7 @@ Mauro Afonso - 87993
 Sofia Correia - 87475  
 Tiago Bombas - 87998  
 
-Este projeto foi desenvolvido no âmbito da unidade curricular "Engenharia de Software" e consiste numa aplicação que deteta, designada de CodeQualityAssessor, para avaliação da qualidade de código (Java) em projetos de software. Esta tem como objetivo o auxílio na deteção de defeitos de código, designados code smells na área de engenharia. 
+Este projeto foi desenvolvido no âmbito da unidade curricular "Engenharia de Software" e consiste numa aplicação, designada de CodeQualityAssessor, para avaliação da qualidade de código (Java) em projetos de software. Esta tem como objetivo o auxílio na deteção de defeitos de código, designados code smells na área de engenharia. 
 Para a deteção de code smells é necessário extrair um conjunto de métricas sobre o código de um projeto Java, nomeadamente:
 - número de linhas de código do método [LOC_method]
 - complexidade ciclomática do método [CYCLO_method]
